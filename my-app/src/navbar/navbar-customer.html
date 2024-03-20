@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Bar</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        nav {
+            margin-left: 20px; 
+            margin-right: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="bg-white p-4">
+    <div class="flex justify-between"> 
+        <div class="flex flex-col items-center">
+            <img src="../asset/logo.png" alt="Foree Logo" width="50px">
+        </div>
+        <div class="flex flex-col items-center">
+            <img src="../asset/coffee-beans.png" alt="Coffee" width="30px">
+            <a href="../menu/menu-coffee-cust.html" class="text-black font-bold text-lg">Coffee</a>
+        </div>
+        <div class="flex flex-col items-center">
+            <!-- onclick="showImage('coffee.png'); changeTextColor(this);" -->
+            <img src="../asset/leaves.png" alt="Non-Coffee" width="30px">
+            <a href="#" class="text-black font-bold text-lg">Non-coffee</a>
+        </div>
+        <div class="flex flex-col items-center">
+            <img src="../asset/donut.png" alt="Donut" width="30px">
+            <a href="#" class="text-black font-bold text-lg">Donut</a>
+        </div>
+    </div>
+</nav>
+
+<!-- <script>
+    function showImage(imageName) {
+        document.getElementById("imageElementId").src = "../Images/" + imageName;
+    }
+
+    function changeTextColor(linkElement) {
+        linkElement.style.color = "text-green-900";
+    }
+</script> -->
+</body>
+</html>
