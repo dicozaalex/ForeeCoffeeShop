@@ -1,7 +1,7 @@
 package main
 
 import (
-	"foreecoffee/controllers"
+	"foreecoffeeshop/controllers"
 	"log"
 	"net/http/httptest"
 	"os"
