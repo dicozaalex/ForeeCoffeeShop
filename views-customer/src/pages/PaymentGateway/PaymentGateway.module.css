@@ -1,7 +1,7 @@
 .fullScreen {
     display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
+    justify-content: center;
+    align-items: center;
     min-height: 100vh;
     background-color: #1C5739;
   }
@@ -17,11 +17,11 @@
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    display: inline-block; /* Ensure buttons are inline */
-    margin-bottom: 10px; /* Add margin between buttons */
+    display: inline-block;
+    margin-bottom: 10px;
   }
   
   .bg-brown-button:disabled {
     cursor: not-allowed;
-    background-color: rgba(172, 135, 78, 0.5); /* Use rgba for opacity */
+    background-color: rgba(172, 135, 78, 0.5);
   }
