@@ -6,6 +6,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func isEmpty(fields ...string) bool {
+	for _, field := range fields {
+		if field == "" {
+			return true
+		}
+	}
+	return false
+}
+
 func Signup(c *gin.Context) {
 	db := connect()
 	defer db.Close()
@@ -15,6 +24,14 @@ func Signup(c *gin.Context) {
 	username := c.PostForm("username")
 	role := "CUSTOMER"
 
+	if isEmpty(email, password, username) {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Please fill in all required fields",
+			"status":  http.StatusBadRequest,
+		})
+		return
+	}
+
 	_, err := db.Exec("INSERT INTO `users`(`email`, `password`, `username`, `role`) VALUES (?,?,?,?)",
 		email,
 		password,
@@ -23,7 +40,7 @@ func Signup(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Sign up FAILED",
+			"message": "Sign up failed",
 			"status":  http.StatusBadRequest,
 		})
 		return
