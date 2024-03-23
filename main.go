@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -18,6 +19,14 @@ func main() {
 	}
 
 	port := os.Getenv("ROUTER_PORT")
+
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{os.Getenv("FRONT_END_URL")},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
 
 	// EMAIL
 	router.GET("/restart-email-cron", controllers.AuthMiddleware("ADMIN"), controllers.StartCRON)
@@ -49,7 +58,7 @@ func main() {
 
 	// BRANCHES
 	branchesRoutes := router.Group("/branches")
-	branchesRoutes.GET("", controllers.AuthMiddleware("ADMIN"), controllers.GetAllBranches)
+	branchesRoutes.GET("", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetAllBranches)
 	branchesRoutes.POST("", controllers.AuthMiddleware("ADMIN"), controllers.InsertBranch)
 	branchesRoutes.PUT("/:id", controllers.AuthMiddleware("ADMIN"), controllers.UpdateBranch)
 	branchesRoutes.DELETE("/:id", controllers.AuthMiddleware("ADMIN"), controllers.DeleteBranch)
