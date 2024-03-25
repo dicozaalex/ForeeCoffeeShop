@@ -1,0 +1,27 @@
+.fullScreen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #1C5739;
+  }
+  
+  .container {
+    text-align: center;
+  }
+  
+  .bg-brown-button {
+    background-color: #AC874E;
+    color: #FFFFFF;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+  
+  .bg-brown-button:disabled {
+    cursor: not-allowed;
+    background-color: rgba(172, 135, 78, 0.5);
+  }
