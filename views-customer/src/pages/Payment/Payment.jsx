@@ -12,22 +12,17 @@ function Payment() {
             <div className="w-3/4 mx-auto grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
                 {/* <!-- Button 1 --> */}
                 <Link to="/payment-gateway" className={styles['bg-brown-button']}>
-                    <img src={`${process.env.PUBLIC_URL}/assets/cash.png`} alt="Cash" className="mr-2" width="30px" height="30px" />
-                    <span>Cash</span>
+                    <img src={`${process.env.PUBLIC_URL}/assets/payments/shopeepay.png`} alt="Shopeepay" className="mr-2" width="30px" height="30px" />
+                    <span>Shopeepay</span>
                 </Link>
                 {/* <!-- Button 2 --> */}
                 <Link to="/payment-gateway" className={styles['bg-brown-button']}>
-                    <img src={`${process.env.PUBLIC_URL}/assets/shopeepay.png`} alt="Shopeepay" className="mr-2" width="30px" height="30px" />
-                    <span>Shopeepay</span>
+                    <img src={`${process.env.PUBLIC_URL}/assets/payments/gopay.png`} alt="Gopay" className="mr-2" width="30px" height="30px" />
+                    <span>Gopay</span>
                 </Link>
                 {/* <!-- Button 3 --> */}
                 <Link to="/payment-gateway" className={styles['bg-brown-button']}>
-                    <img src={`${process.env.PUBLIC_URL}/assets/gopay.png`} alt="Gopay" className="mr-2" width="30px" height="30px" />
-                    <span>Gopay</span>
-                </Link>
-                {/* <!-- Button 4 --> */}
-                <Link to="/payment-gateway" className={styles['bg-brown-button']}>
-                    <img src={`${process.env.PUBLIC_URL}/assets/ovo.png`} alt="OVO" className="mr-2" width="30px" height="30px" />
+                    <img src={`${process.env.PUBLIC_URL}/assets/payments/ovo.png`} alt="OVO" className="mr-2" width="30px" height="30px" />
                     <span>OVO</span>
                 </Link>
             </div>
