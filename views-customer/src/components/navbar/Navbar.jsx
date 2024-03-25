@@ -1,26 +1,31 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 function Navbar() {
+  const location = useLocation();
+  const [url, setUrl] = useState(null);
+  useEffect(() => {
+    setUrl(location.pathname);
+    console.log(url);
+  }, [location, url]);
+  
   return (
     <>
-      <nav className="bg-white p-5">
-        <div className="flex justify-between">
-          <div className="flex flex-col items-center">
-            <img src={`${process.env.PUBLIC_URL}/assets/logo.png`} alt="Foree Logo" width="50px"></img>
-          </div>
-          <div className="flex flex-col items-center">
-            <img src={`${process.env.PUBLIC_URL}/assets/coffee-beans.png`} alt="Coffee" width="30px"></img>
-              <Link to="/coffee" className="text-black font-bold text-lg">Coffee</Link>
-          </div>
-          <div className="flex flex-col items-center">
-            <img src={`${process.env.PUBLIC_URL}/assets/leaves.png`} alt="Non-Coffee" width="30px"></img>
-              <Link to="/non-coffee" className="text-black font-bold text-lg">Non-coffee</Link>
-          </div>
-          <div className="flex flex-col items-center">
-            <img src={`${process.env.PUBLIC_URL}/assets/donut.png`} alt="Donut" width="30px"></img>
-              <Link to="/donut" className="text-black font-bold text-lg">Donut</Link>
-          </div>
+      <nav className="p-5 top-0 sticky bg-white">
+        <div className="flex items-center justify-between">
+            <img src={`${process.env.PUBLIC_URL}/assets/logo.png`} alt="Foree Logo" width="50px" />
+            <Link to="/coffee" className={"items-center flex flex-col " + (url === "/coffee" ? "active-navbar" : "")}>
+              <img src={`${process.env.PUBLIC_URL}/assets/Navbar/coffee-beans.png`} alt="Coffee" width="30px" />
+              <span className="text-black font-bold text-lg">COFFEE</span>
+            </Link>
+            <Link to="/non-coffee" className={"items-center flex flex-col " + (url === "/non-coffee" ? "active-navbar" : "")}>
+              <img src={`${process.env.PUBLIC_URL}/assets/Navbar/leaves.png`} alt="Non-Coffee" width="30px" />
+              <span className="text-black font-bold text-lg">NON-COFFEE</span>
+            </Link>
+            <Link to="/donut" className={"items-center flex flex-col " + (url === "/donut" ? "active-navbar" : "")}>
+              <img src={`${process.env.PUBLIC_URL}/assets/Navbar/donut.png`} alt="Donut" width="30px" />
+              <span className="text-black font-bold text-lg">DONUT</span>
+            </Link>
         </div>
       </nav>
     </>
