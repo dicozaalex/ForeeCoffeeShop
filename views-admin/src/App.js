@@ -1,4 +1,4 @@
-import { BrowserRouter as Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import React from 'react';
 import InsertMenu from './pages/InsertMenu/InsertMenu.jsx';
 
