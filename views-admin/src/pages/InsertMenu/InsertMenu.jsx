@@ -6,19 +6,27 @@ function InsertMenu() {
     category: '',
     subCategory: '',
     price: '',
-    stock: ''
+    stock: '',
+    photo: null
   });
 
   const [subCategories, setSubCategories] = useState([]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setInputs((prevState) => ({
-      ...prevState,
-      [name]: value
-    }));
+    const { name, value, files } = e.target;
 
-    // Set sub-categories based on the selected category
+    if (name === 'photo') {
+      setInputs((prevState) => ({
+        ...prevState,
+        photo: files[0]
+      }));
+    } else {
+      setInputs((prevState) => ({
+        ...prevState,
+        [name]: value
+      }));
+    }
+
     if (name === 'category') {
       if (value === 'Coffee') {
         setSubCategories(['Latte', 'Flavoured Coffee']);
@@ -29,18 +37,66 @@ function InsertMenu() {
       }
     }
   };
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
+  
+    if (!checkAllFieldsFilled(inputs)) {
+      alert('Please fill in all fields.');
+      return;
+    }
+  
+    if (!checkStock(inputs)) {
+      alert('Stock must be positive numbers.');
+      return;
+    }
+
+    if (!checkPrice(inputs)) {
+      alert('Price must be positive numbers.');
+      return;
+    }
+  
     console.log('Form submitted:', inputs);
-    // Other logics
+  };
+
+  const checkAllFieldsFilled = (inputs) => {
+    // belum cek photo
+    const { productName, category, subCategory, price, stock } = inputs;
+    return (
+      productName &&
+      category &&
+      subCategory &&
+      price &&
+      stock &&
+      category !== 'Select category' &&
+      subCategory !== 'Select sub-category'
+    );
+  };
+  
+  const checkPrice = (inputs) => {
+    const { price } = inputs;
+    return !isNaN(Number(price)) && Number(price) >= 0;
+  };
+
+  const checkStock = (inputs) => {
+    const { stock } = inputs;
+    return !isNaN(Number(stock)) && Number(stock) >= 0;
   };
 
   return (
     <div className="flex flex-col items-center justify-center h-screen" style={{ backgroundColor: '#1C5739' }}>
       <form onSubmit={handleSubmit} className="w-6/12">
         
-        <div className="relative w-40 h-40 mb-4 overflow-hidden flex items-center justify-center">
+        <div className="relative w-40 h-40 mb-4 overflow-hidden flex items-center justify-center mx-auto">
+          <input
+              id="photo"
+              name="photo"
+              type="file"
+              accept="image/*"
+              className="absolute inset-0 opacity-0 z-10 cursor-pointer"
+              onChange={handleChange}
+              style={{ zIndex: 4 }}
+            />
           <div className="absolute inset-0 bg-gray-300 opacity-50" style={{ zIndex: 2 }}></div>
           <img
             src={`${process.env.PUBLIC_URL}/assets/InsertMenu/exampleFoodDrink.png`}
