@@ -15,7 +15,7 @@ func InsertMenuBranch(c *gin.Context) {
 
 	branchName := "%" + c.Param("branchName") + "%"
 	productName := "%" + c.PostForm("productName") + "%"
-	productStok := c.PostForm("productQuantity")
+	productStok := c.PostForm("stock")
 
 	var branch Branch
 	queryBranch := "SELECT id, name, address FROM `branches` WHERE name LIKE ?"
@@ -92,13 +92,26 @@ func UpdateMenuBranch(c *gin.Context) {
 
 	branchName := "%" + c.Param("branchName") + "%"
 	productName := "%" + c.PostForm("productName") + "%"
-	plusStok, _ := strconv.Atoi(c.PostForm("plusStok"))
+	newStock, _ := strconv.Atoi(c.PostForm("stock"))
 
 	var updateProduct UpdateProductBranch
+
+	// Fetch branch information
 	queryBranch := "SELECT id, name, address FROM `branches` WHERE name LIKE ?"
-	row, _ := db.Prepare(queryBranch)
-	err := row.QueryRow(branchName).Scan(&updateProduct.Branch.ID, &updateProduct.Branch.Name, &updateProduct.Branch.Address)
+	rowBranch, err := db.Prepare(queryBranch)
 	if err != nil {
+		log.Println("Error preparing branch query:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Internal Server Error",
+			"status":  http.StatusInternalServerError,
+		})
+		return
+	}
+	defer rowBranch.Close()
+
+	err = rowBranch.QueryRow(branchName).Scan(&updateProduct.Branch.ID, &updateProduct.Branch.Name, &updateProduct.Branch.Address)
+	if err != nil {
+		log.Println("Error querying branch:", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "Nama Branch tidak ditemukan",
 			"status":  http.StatusBadRequest,
@@ -106,9 +119,20 @@ func UpdateMenuBranch(c *gin.Context) {
 		return
 	}
 
-	query := "SELECT id, name, price, pictureUrl, category FROM `product` WHERE name LIKE ?"
-	rows, _ := db.Prepare(query)
-	err = rows.QueryRow(productName).Scan(&updateProduct.Product.ID, &updateProduct.Product.Name, &updateProduct.Product.Price, &updateProduct.Product.PictureUrl, &updateProduct.Product.Category)
+	// Fetch product information
+	queryProduct := "SELECT id, name, price, pictureUrl, category FROM `product` WHERE name LIKE ?"
+	rowProduct, err := db.Prepare(queryProduct)
+	if err != nil {
+		log.Println("Error preparing product query:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Internal Server Error",
+			"status":  http.StatusInternalServerError,
+		})
+		return
+	}
+	defer rowProduct.Close()
+
+	err = rowProduct.QueryRow(productName).Scan(&updateProduct.Product.ID, &updateProduct.Product.Name, &updateProduct.Product.Price, &updateProduct.Product.PictureUrl, &updateProduct.Product.Category)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusBadRequest, gin.H{
@@ -118,14 +142,24 @@ func UpdateMenuBranch(c *gin.Context) {
 			return
 		}
 		c.AbortWithStatus(http.StatusBadRequest)
-		log.Println("error 1: ", err)
+		log.Println("Error querying product:", err)
 		return
 	}
 
-	query = "SELECT bp.productQuantity FROM `branchproduct` bp JOIN branches b ON bp.branchId = b.id WHERE bp.productId = ? AND b.id = ?"
-	rows, _ = db.Prepare(query)
+	// Check existing stock in branch
+	queryStock := "SELECT bp.productQuantity FROM `branchproduct` bp JOIN branches b ON bp.branchId = b.id WHERE bp.productId = ? AND b.id = ?"
+	rowStock, err := db.Prepare(queryStock)
+	if err != nil {
+		log.Println("Error preparing stock query:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Internal Server Error",
+			"status":  http.StatusInternalServerError,
+		})
+		return
+	}
+	defer rowStock.Close()
 
-	err = rows.QueryRow(updateProduct.Product.ID, updateProduct.Branch.ID).Scan(&updateProduct.OldStock)
+	err = rowStock.QueryRow(updateProduct.Product.ID, updateProduct.Branch.ID).Scan(&updateProduct.OldStock)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusBadRequest, gin.H{
@@ -135,10 +169,12 @@ func UpdateMenuBranch(c *gin.Context) {
 			return
 		}
 		c.AbortWithStatus(http.StatusBadRequest)
-		log.Println("error 2: ", err)
+		log.Println("Error querying stock:", err)
 		return
 	}
-	updateProduct.NewStock = updateProduct.OldStock + plusStok
+
+	// Update stock quantity in branch
+	updateProduct.NewStock = newStock
 	queryUpdate := "UPDATE `branchproduct` SET `productQuantity`= ? WHERE branchId = ? AND productId = ?"
 	_, err = db.Exec(queryUpdate,
 		updateProduct.NewStock,
@@ -146,10 +182,11 @@ func UpdateMenuBranch(c *gin.Context) {
 		updateProduct.Product.ID)
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
-		log.Println("error 2: ", err)
+		log.Println("Error updating stock:", err)
 		return
 	}
 
+	// Respond with success and updated product information
 	var response Response
 	response.Status = http.StatusOK
 	response.Message = http.StatusText(http.StatusOK)

@@ -339,7 +339,7 @@ func GetProductByNameAndBranch(c *gin.Context) {
 
 	productName = "%" + c.Query("Name") + "%"
 
-	query := "SELECT p.id, p.name, p.price, p.pictureUrl, p.category, b.id, b.name, b.address, bp.productQuantity " +
+	query := "SELECT p.id, p.name, p.price, p.pictureUrl, p.category, p.subcategory, p.desc, b.id, b.name, b.address, bp.productQuantity " +
 		"FROM products p " +
 		"JOIN branchproduct bp ON p.id=bp.productId " +
 		"JOIN branches b ON bp.branchId=b.id " +
@@ -363,6 +363,8 @@ func GetProductByNameAndBranch(c *gin.Context) {
 			&product.Price,
 			&product.PictureUrl,
 			&product.Category,
+			&product.SubCategory,
+			&product.Desc,
 			&branch.ID,
 			&branch.Name,
 			&branch.Address,
@@ -372,6 +374,8 @@ func GetProductByNameAndBranch(c *gin.Context) {
 			c.JSON(400, gin.H{"error": "products not found"})
 			return
 		} else {
+			product.ProductQuantity = productQuantity
+
 			if productQuantity > 0 {
 				product.Status = "AVAILABLE"
 			} else {
@@ -429,7 +433,7 @@ func InsertProduct(c *gin.Context) {
 		return
 	}
 
-	errGetNewProductId := db.QueryRow("SELECT `id` FROM `product` WHERE `name`=?", newProduct.Name).Scan(&newProduct.ID)
+	errGetNewProductId := db.QueryRow("SELECT `id` FROM `products` WHERE `name`=?", newProduct.Name).Scan(&newProduct.ID)
 	if errGetNewProductId != nil {
 		fmt.Println(errGetNewProductId)
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Get new product ID failed"})
@@ -455,7 +459,7 @@ func UpdateProduct(c *gin.Context) {
 
 	var product Product
 
-	errGetOldProduct := db.QueryRow("SELECT id, name, price FROM product WHERE id = ?", productId).Scan(&product.ID, &product.Name, &product.Price)
+	errGetOldProduct := db.QueryRow("SELECT id, name, price FROM products WHERE id = ?", productId).Scan(&product.ID, &product.Name, &product.Price)
 	if errGetOldProduct == sql.ErrNoRows {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Product does not exist"})
 		return
@@ -469,7 +473,7 @@ func UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	_, err := db.Exec("UPDATE product SET name= ?, price= ?, pictureurl= ?, category= ? WHERE id=?", productName, productPrice, productUrl, productCategory, productId)
+	_, err := db.Exec("UPDATE products SET name= ?, price= ?, pictureurl= ?, category= ? WHERE id=?", productName, productPrice, productUrl, productCategory, productId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error in update query"})
 		return
@@ -490,7 +494,7 @@ func DeleteProduct(c *gin.Context) {
 
 	var product Product
 
-	errGetOldProduct := db.QueryRow("SELECT id, name, price FROM product WHERE id = ?", productId).Scan(&product.ID, &product.Name, &product.Price)
+	errGetOldProduct := db.QueryRow("SELECT id, name, price FROM products WHERE id = ?", productId).Scan(&product.ID, &product.Name, &product.Price)
 	if errGetOldProduct == sql.ErrNoRows {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Product does not exist"})
 		return
@@ -516,7 +520,7 @@ func DeleteProduct(c *gin.Context) {
 		return
 	}
 
-	_, err := db.Exec("DELETE FROM product WHERE id = ?", productId)
+	_, err := db.Exec("DELETE FROM products WHERE id = ?", productId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error in delete query"})
 		return
