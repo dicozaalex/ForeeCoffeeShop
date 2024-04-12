@@ -420,10 +420,11 @@ func InsertProduct(c *gin.Context) {
 		return
 	}
 
-	_, errQueryInsertProduct := db.Query("INSERT INTO products (name, price, category, pictureUrl) VALUES (?,?,?,?)",
+	_, errQueryInsertProduct := db.Query("INSERT INTO products (name, price, category, subcategory, pictureUrl) VALUES (?,?,?,?,?)",
 		newProduct.Name,
 		newProduct.Price,
 		newProduct.Category,
+		newProduct.SubCategory,
 		newProduct.PictureUrl,
 	)
 
@@ -452,10 +453,17 @@ func UpdateProduct(c *gin.Context) {
 	defer db.Close()
 
 	productId := c.Param("id")
-	productName := c.PostForm("name")
-	productPrice := c.PostForm("price")
-	productUrl := c.PostForm("url")
+	productName := c.PostForm("productName")
+	productPrice := c.PostForm("productPrice")
+	productUrl := c.PostForm("picture_url")
 	productCategory := c.PostForm("category")
+	productSubCategory := c.PostForm("subCategory")
+
+	fmt.Println("productname = ", productName)
+	fmt.Println("productPrice = ", productPrice)
+	fmt.Println("productUrl = ", productUrl)
+	fmt.Println("productCategory = ", productCategory)
+	fmt.Println("productSubCategory = ", productSubCategory)
 
 	var product Product
 
@@ -473,7 +481,7 @@ func UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	_, err := db.Exec("UPDATE products SET name= ?, price= ?, pictureurl= ?, category= ? WHERE id=?", productName, productPrice, productUrl, productCategory, productId)
+	_, err := db.Exec("UPDATE products SET name= ?, price= ?, pictureurl= ?, category= ?, subcategory= ? WHERE id=?", productName, productPrice, productUrl, productCategory, productSubCategory, productId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error in update query"})
 		return

@@ -24,11 +24,12 @@ type Branch struct {
 }
 
 type Product struct {
-	ID         int    `json:"id"`
-	Name       string `json:"name"`
-	Price      int    `json:"price"`
-	Category   string `json:"category"`
-	PictureUrl string `json:"picture_url"`
+	ID          int    `json:"id"`
+	Name        string `json:"name"`
+	Price       int    `json:"price"`
+	Category    string `json:"category"`
+	SubCategory string `json:"subcategory"`
+	PictureUrl  string `json:"picture_url"`
 }
 
 type ShortProduct struct {

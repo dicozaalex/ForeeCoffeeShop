@@ -120,7 +120,7 @@ func UpdateMenuBranch(c *gin.Context) {
 	}
 
 	// Fetch product information
-	queryProduct := "SELECT id, name, price, pictureUrl, category FROM `product` WHERE name LIKE ?"
+	queryProduct := "SELECT id, name, price, pictureUrl, category FROM `products` WHERE name LIKE ?"
 	rowProduct, err := db.Prepare(queryProduct)
 	if err != nil {
 		log.Println("Error preparing product query:", err)

@@ -4,7 +4,6 @@ import axios from 'axios';
 function EditMenu() {
   const [inputs, setInputs] = useState({
     productId: '',
-    branchId: '',
     productName: '',
     category: 'Select category',
     subCategory: 'Select sub-category',
@@ -138,7 +137,23 @@ function EditMenu() {
   };
 
   const handleProductUpdate = () => {
-    return axios.put(`http://localhost:8080/products/${inputs.productId}`, inputs)
+    const newProductData = {
+      id: inputs.productId,
+      productName: inputs.productName,
+      productPrice: inputs.price,
+      picture_url: inputs.picture_url,
+      category: inputs.category,
+      subCategory: inputs.subCategory,
+    };
+    
+    console.log("newProductData###########")
+    console.log("productName = ", newProductData.productName)
+    console.log("productPrice = ", newProductData.productPrice)
+    console.log("picture_url = ", newProductData.picture_url)
+    console.log("category = ", newProductData.category)
+    console.log("subCategory = ", newProductData.subCategory)
+
+    return axios.put(`http://localhost:8080/products/${inputs.productId}`, newProductData)
         .then((response) => {
             console.log('Product updated:', response.data);
         })
@@ -149,16 +164,20 @@ function EditMenu() {
   };
 
   const handleStockUpdate = () => {
-    //  API still not corrected
-      return axios.put(`http://localhost:8080/productBranch/Dipatiukur, Bandung`, inputs)
-          .then((response) => {
-              console.log('Stock updated:', response.data);
-          })
-          .catch((error) => {
-              console.error('Error updating stock:', error);
-              throw error;
-          });
-  };
+    const formData = new FormData();
+    formData.append('productName', inputs.productName);
+    formData.append('stock', inputs.stock);
+  
+    // API still not correct (hard-coded)
+    axios.put(`http://localhost:8080/productBranch/Dipatiukur, Bandung`, formData)
+      .then((response) => {
+        console.log('Stock updated:', response.data);
+      })
+      .catch((error) => {
+        console.error('Error updating stock:', error);
+        throw error;
+      });
+  };  
 
   const handleDelete = () => {
     const confirmed = window.confirm('Are you sure you want to delete this product? Click OK to delete, or Cancel to go back.');
