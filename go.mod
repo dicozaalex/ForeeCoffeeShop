@@ -14,6 +14,12 @@ require (
 )
 
 require (
+	github.com/golang/protobuf v1.5.0 // indirect
+	github.com/koffeinsource/go-klogger v0.1.1 // indirect
+	google.golang.org/appengine v1.6.5 // indirect
+)
+
+require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/bytedance/sonic v1.11.2 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
@@ -29,6 +35,7 @@ require (
 	github.com/google/uuid v1.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.7 // indirect
+	github.com/koffeinsource/go-imgur v0.4.1
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect

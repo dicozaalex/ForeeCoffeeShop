@@ -21,7 +21,7 @@ func main() {
 	port := os.Getenv("ROUTER_PORT")
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{os.Getenv("FRONT_END_URL")},
+		AllowOrigins:     []string{os.Getenv("FRONT_END_ADMIN_URL"), os.Getenv("FRONT_END_CUSTOMER_URL")},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowHeaders:     []string{"Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -49,7 +49,7 @@ func main() {
 	productsRoutes.GET("/branch", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetAllProductsByBranch)
 	// productsRoutes.GET("/name", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetProductByNameAndBranch)
 	productsRoutes.GET("/name", controllers.GetProductByNameAndBranch)
-	productsRoutes.GET("/coffee", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetProductsCoffeeByBranch)
+	productsRoutes.GET("/coffee", controllers.GetProductsCoffeeByBranch)
 	productsRoutes.GET("/tea", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetProductsTeaByBranch)
 	productsRoutes.GET("/yakult", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetProductsYakultByBranch)
 

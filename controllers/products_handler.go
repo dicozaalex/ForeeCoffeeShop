@@ -2,11 +2,14 @@ package controllers
 
 import (
 	"database/sql"
+	"encoding/base64"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/koffeinsource/go-imgur"
 )
 
 func GetAllProductsAndTheirBranches(c *gin.Context) {
@@ -160,7 +163,6 @@ func GetProductsCoffeeByBranch(c *gin.Context) {
 
 	var product ProductForMenu
 	var products []ProductForMenu
-	var productQuantity int
 	var branch Branch
 	for rows.Next() {
 		if err := rows.Scan(
@@ -172,13 +174,13 @@ func GetProductsCoffeeByBranch(c *gin.Context) {
 			&branch.ID,
 			&branch.Name,
 			&branch.Address,
-			&productQuantity,
+			&product.ProductQuantity,
 		); err != nil {
 			log.Println(err)
 			c.JSON(400, gin.H{"error": "products not found"})
 			return
 		} else {
-			if productQuantity > 0 {
+			if product.ProductQuantity > 0 {
 				product.Status = "AVAILABLE"
 			} else {
 				product.Status = "UNAVAILABLE"
@@ -408,6 +410,36 @@ func InsertProduct(c *gin.Context) {
 		return
 	}
 
+	file, _, err := c.Request.FormFile("photo")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing product image"})
+		return
+	}
+
+	var imageBytes []byte
+	buffer := make([]byte, 1024)
+	for {
+		n, err := file.Read(buffer)
+		if err != nil {
+			if err != io.EOF {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "File error"})
+				return
+			}
+			break
+		}
+		imageBytes = append(imageBytes, buffer[:n]...)
+	}
+
+	base64Image := base64.StdEncoding.EncodeToString(imageBytes)
+	client, _ := imgur.NewClient(new(http.Client), "ad02267f3d1ac90", "")
+	imageInfo, _, err := client.UploadImage([]byte(base64Image), "", "base64", newProduct.Name, newProduct.Name)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "File error"})
+		return
+	}
+
+	newProduct.PictureUrl = imageInfo.Link
+
 	if newProduct.Name == "" || newProduct.Price <= 0 || newProduct.Category == "" || newProduct.SubCategory == "" || newProduct.PictureUrl == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Input product cannot be empty"})
 		return
@@ -455,11 +487,42 @@ func UpdateProduct(c *gin.Context) {
 	productId := c.Param("id")
 	productName := c.PostForm("productName")
 	productPrice := c.PostForm("productPrice")
-	productUrl := c.PostForm("picture_url")
 	productCategory := c.PostForm("category")
 	productSubCategory := c.PostForm("subCategory")
+	productUrl := c.PostForm("picture_url")
+	file, _, err := c.Request.FormFile("photo")
+	if file != nil {
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Missing product image"})
+			return
+		}
 
-	fmt.Println("productname = ", productName)
+		var imageBytes []byte
+		buffer := make([]byte, 1024)
+		for {
+			n, err := file.Read(buffer)
+			if err != nil {
+				if err != io.EOF {
+					c.JSON(http.StatusBadRequest, gin.H{"error": "File error"})
+					return
+				}
+				break
+			}
+			imageBytes = append(imageBytes, buffer[:n]...)
+		}
+
+		base64Image := base64.StdEncoding.EncodeToString(imageBytes)
+		client, _ := imgur.NewClient(new(http.Client), "ad02267f3d1ac90", "")
+		imageInfo, _, err := client.UploadImage([]byte(base64Image), "", "base64", productName, productName)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "File error"})
+			return
+		}
+
+		productUrl = imageInfo.Link
+	}
+
+	fmt.Println("productName = ", productName)
 	fmt.Println("productPrice = ", productPrice)
 	fmt.Println("productUrl = ", productUrl)
 	fmt.Println("productCategory = ", productCategory)
@@ -481,7 +544,7 @@ func UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	_, err := db.Exec("UPDATE products SET name= ?, price= ?, pictureurl= ?, category= ?, subcategory= ? WHERE id=?", productName, productPrice, productUrl, productCategory, productSubCategory, productId)
+	_, err = db.Exec("UPDATE products SET name= ?, price= ?, pictureurl= ?, category= ?, subcategory= ? WHERE id=?", productName, productPrice, productUrl, productCategory, productSubCategory, productId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error in update query"})
 		return

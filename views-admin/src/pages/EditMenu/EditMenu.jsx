@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function EditMenu() {
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
   const [inputs, setInputs] = useState({
     productId: '',
     productName: '',
@@ -15,8 +16,8 @@ function EditMenu() {
   const [subCategories, setSubCategories] = useState([]);
 
   useEffect(() => {
-    //API = 'http://localhost:8080/products/name?Name=${productName}&Branch=${branchName}'
-    axios.get('http://localhost:8080/products/name?Name=Matcha&Branch=Dipatiukur, Bandung')
+    //API = '${backendUrl}/products/name?Name=${productName}&Branch=${branchName}'
+    axios.get(`${backendUrl}/products/name?Name=Matcha&Branch=Dipatiukur, Bandung`)
       // , {
       //   headers: {
       //     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
@@ -24,7 +25,7 @@ function EditMenu() {
       // }
       .then((response) => {
         const productData = response.data.data.products[0];
-  
+
         setInputs((prevState) => ({
           ...prevState,
           productId: productData.id,
@@ -34,8 +35,9 @@ function EditMenu() {
           price: productData.price ? productData.price.toString() : '',
           stock: productData.stock ? productData.stock.toString() : '',
           picture_url: productData.picture_url,
+          photo: null,
         }));
-  
+
         if (productData.category === 'COFFEE') {
           setSubCategories(['LATTE', 'FLAVOURED COFFEE']);
         } else if (productData.category === 'NON COFFEE') {
@@ -48,7 +50,7 @@ function EditMenu() {
         console.error('Error fetching product data:', error);
       });
   }, []);
-  
+
 
   useEffect(() => {
     console.log('Inputs after setting state:', inputs);
@@ -61,10 +63,19 @@ function EditMenu() {
     console.log('Current Inputs State:', inputs);
 
     if (name === 'photo') {
-      setInputs((prevState) => ({
-        ...prevState,
-        photo: files[0]
-      }));
+      if (files && files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          setInputs((prevState) => ({
+            ...prevState,
+            photo: files[0],
+            picture_url: e.target.result,
+          }));
+        };
+
+        reader.readAsDataURL(files[0]);
+      }
     } else {
       setInputs((prevState) => ({
         ...prevState,
@@ -102,12 +113,12 @@ function EditMenu() {
     }
 
     Promise.all([handleProductUpdate(), handleStockUpdate()])
-        .then(() => {
-            alert('Updated Success');
-        })
-        .catch((error) => {
-            console.error('Error updating:', error);
-        });
+      .then(() => {
+        alert('Updated Success');
+      })
+      .catch((error) => {
+        console.error('Error updating:', error);
+      });
 
     console.log('Form submitted:', inputs);
   };
@@ -137,39 +148,36 @@ function EditMenu() {
   };
 
   const handleProductUpdate = () => {
-    const newProductData = {
-      id: inputs.productId,
-      productName: inputs.productName,
-      productPrice: inputs.price,
-      picture_url: inputs.picture_url,
-      category: inputs.category,
-      subCategory: inputs.subCategory,
-    };
-    
-    console.log("newProductData###########")
-    console.log("productName = ", newProductData.productName)
-    console.log("productPrice = ", newProductData.productPrice)
-    console.log("picture_url = ", newProductData.picture_url)
-    console.log("category = ", newProductData.category)
-    console.log("subCategory = ", newProductData.subCategory)
+    const formData = new FormData();
+    formData.append('id', inputs.productId);
+    formData.append('productName', inputs.productName);
+    formData.append('productPrice', inputs.price);
+    formData.append('category', inputs.category);
+    formData.append('subCategory', inputs.subCategory);
+    formData.append('picture_url', inputs.picture_url);
+    formData.append('photo', inputs.photo);
 
-    return axios.put(`http://localhost:8080/products/${inputs.productId}`, newProductData)
-        .then((response) => {
-            console.log('Product updated:', response.data);
-        })
-        .catch((error) => {
-            console.error('Error updating product:', error);
-            throw error;
-        });
+    try {
+      const response = axios.put(`${backendUrl}/products/${inputs.productId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      console.log('Product updated:', response.data);
+
+    } catch (error) {
+      console.error('Error updating product:', error);
+      throw error;
+    };
   };
 
   const handleStockUpdate = () => {
     const formData = new FormData();
     formData.append('productName', inputs.productName);
     formData.append('stock', inputs.stock);
-  
+
     // API still not correct (hard-coded)
-    axios.put(`http://localhost:8080/productBranch/Dipatiukur, Bandung`, formData)
+    axios.put(`${backendUrl}/productBranch/Dipatiukur, Bandung`, formData)
       .then((response) => {
         console.log('Stock updated:', response.data);
       })
@@ -177,19 +185,19 @@ function EditMenu() {
         console.error('Error updating stock:', error);
         throw error;
       });
-  };  
+  };
 
   const handleDelete = () => {
     const confirmed = window.confirm('Are you sure you want to delete this product? Click OK to delete, or Cancel to go back.');
     if (confirmed) {
-      // API = `http://localhost:8080/products/${productId}
-      axios.delete(`http://localhost:8080/products/2013`
-      // , {
-      //   headers: {
-      //     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-      //   },
-      // }
-    )
+      // API = `${backendUrl}/products/${productId}
+      axios.delete(`${backendUrl}/products/2013`
+        // , {
+        //   headers: {
+        //     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        //   },
+        // }
+      )
         .then((response) => {
           console.log('Product deleted:', response.data);
         })
@@ -202,19 +210,19 @@ function EditMenu() {
   return (
     <div className="flex flex-col items-center justify-center h-screen" style={{ backgroundColor: '#1C5739' }}>
       <form onSubmit={handleSubmit} className="w-6/12">
-        
+
         <div className="relative w-40 h-40 mb-4 overflow-hidden flex items-center justify-center mx-auto">
           <input
-              id="photo"
-              name="photo"
-              type="file"
-              accept="image/*"
-              className="absolute inset-0 opacity-0 z-10 cursor-pointer"
-              onChange={handleChange}
-              style={{ zIndex: 4 }}
-            />
+            id="photo"
+            name="photo"
+            type="file"
+            accept="image/*"
+            className="absolute inset-0 opacity-0 z-10 cursor-pointer"
+            onChange={handleChange}
+            style={{ zIndex: 4 }}
+          />
           <img
-            src={inputs.picture_url}
+            src={inputs.photo ? URL.createObjectURL(inputs.photo) : inputs.picture_url}
             alt="Product"
             className="w-full h-full object-cover"
             style={{ zIndex: 1 }}
@@ -307,8 +315,8 @@ function EditMenu() {
         </div>
 
         <div className="items-center flex flex-col justify-center">
-          <button type="submit" className="rounded-lg w-8/12 p-2 mt-14 mb-2 text-xl text-white" style={{ backgroundColor: '#AC874E'}}>Save Changes</button>
-          <button type="button" onClick={handleDelete} className="rounded-lg w-8/12 p-2 mt-6 mb-2 text-xl text-white" style={{ backgroundColor: '#CB4A4A'}}>Delete Menu</button>
+          <button type="submit" className="rounded-lg w-8/12 p-2 mt-14 mb-2 text-xl text-white" style={{ backgroundColor: '#AC874E' }}>Save Changes</button>
+          <button type="button" onClick={handleDelete} className="rounded-lg w-8/12 p-2 mt-6 mb-2 text-xl text-white" style={{ backgroundColor: '#CB4A4A' }}>Delete Menu</button>
         </div>
       </form>
     </div>
