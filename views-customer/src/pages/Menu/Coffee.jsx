@@ -1,10 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import Navbar from '../../components/Navbar/Navbar';
 
 function Coffee() {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
+    const [menuItems, setMenuItems] = useState([]);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        axios.get
+    })
 
     const handleLatestButtonClick = () => {
         navigate('/order');
