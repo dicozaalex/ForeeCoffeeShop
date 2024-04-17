@@ -21,7 +21,7 @@ func main() {
 	port := os.Getenv("ROUTER_PORT")
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{os.Getenv("FRONT_END_URL")},
+		AllowOrigins:     []string{os.Getenv("FRONT_END_ADMIN_URL"), os.Getenv("FRONT_END_CUSTOMER_URL")},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowHeaders:     []string{"Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -47,14 +47,18 @@ func main() {
 	productsRoutes := router.Group("/products")
 	productsRoutes.GET("", controllers.AuthMiddleware("ADMIN"), controllers.GetAllProductsAndTheirBranches)
 	productsRoutes.GET("/branch", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetAllProductsByBranch)
-	productsRoutes.GET("/name", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetProductByNameAndBranch)
+	// productsRoutes.GET("/name", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetProductByNameAndBranch)
+	productsRoutes.GET("/name", controllers.GetProductByNameAndBranch)
 	productsRoutes.GET("/coffee", controllers.GetProductsCoffeeByBranch)
-	productsRoutes.GET("/tea", controllers.GetProductsTeaByBranch)
-	productsRoutes.GET("/yakult", controllers.GetProductsYakultByBranch)
+	productsRoutes.GET("/tea", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetProductsTeaByBranch)
+	productsRoutes.GET("/yakult", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetProductsYakultByBranch)
 
-	productsRoutes.POST("", controllers.AuthMiddleware("ADMIN"), controllers.InsertProduct)
-	productsRoutes.PUT("/:id", controllers.AuthMiddleware("ADMIN"), controllers.UpdateProduct)
-	productsRoutes.DELETE("/:id", controllers.AuthMiddleware("ADMIN"), controllers.DeleteProduct)
+	// productsRoutes.POST("", controllers.AuthMiddleware("ADMIN"), controllers.InsertProduct)
+	productsRoutes.POST("", controllers.InsertProduct)
+	// productsRoutes.PUT("/:id", controllers.AuthMiddleware("ADMIN"), controllers.UpdateProduct)
+	productsRoutes.PUT("/:id", controllers.UpdateProduct)
+	// productsRoutes.DELETE("/:id", controllers.AuthMiddleware("ADMIN"), controllers.DeleteProduct)
+	productsRoutes.DELETE("/:id", controllers.DeleteProduct)
 
 	// BRANCHES
 	branchesRoutes := router.Group("/branches")
@@ -71,7 +75,8 @@ func main() {
 	// Product Branch
 	productBranchRoutes := router.Group("/productBranch")
 	productBranchRoutes.POST("/:branchName", controllers.AuthMiddleware("ADMIN"), controllers.InsertMenuBranch)
-	productBranchRoutes.PUT("/:branchName", controllers.AuthMiddleware("ADMIN"), controllers.UpdateMenuBranch)
+	// productBranchRoutes.PUT("/:branchName", controllers.AuthMiddleware("ADMIN"), controllers.UpdateMenuBranch)
+	productBranchRoutes.PUT("/:branchName", controllers.UpdateMenuBranch)
 	productBranchRoutes.DELETE("/:branchName", controllers.AuthMiddleware("ADMIN"), controllers.DeleteMenuBranch)
 
 	w := httptest.NewRecorder()
