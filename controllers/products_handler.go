@@ -408,7 +408,7 @@ func InsertProduct(c *gin.Context) {
 		return
 	}
 
-	if newProduct.Name == "" || newProduct.Price <= 0 || newProduct.Category == "" || newProduct.PictureUrl == "" {
+	if newProduct.Name == "" || newProduct.Price <= 0 || newProduct.Category == "" || newProduct.SubCategory == "" || newProduct.PictureUrl == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Input product cannot be empty"})
 		return
 	}
