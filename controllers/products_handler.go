@@ -212,7 +212,7 @@ func GetProductsYakultByBranch(c *gin.Context) {
 		"FROM products p " +
 		"JOIN branchproduct bp ON p.id=bp.productId " +
 		"JOIN branches b ON bp.branchId=b.id " +
-		"WHERE b.name=? AND p.category='YAKULT'"
+		"WHERE b.name=? AND p.category='NON COFFEE'"
 
 	rows, err := db.Query(query, branchName)
 	if err != nil {
