@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar/Navbar';
 
-function Coffee() {
+function NonCoffee() {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
     const [menuItems, setMenuItems] = useState([]);
     const [counters, setCounters] = useState([]);
@@ -13,8 +13,9 @@ function Coffee() {
     }, []);
 
     const fetchMenuItems = async () => {
+        //harus dibenerin dbnya n backend (yakult & tea -> non coffee)
         try {
-            const response = await fetch(`${backendUrl}/products/coffee?Branch=Griya Buah Batu`);
+            const response = await fetch(`${backendUrl}/products/yakult?Branch=Bandung Indah Plaza`);
             if (!response.ok) {
                 throw new Error('Failed to fetch menu items');
             }
@@ -104,4 +105,4 @@ function Coffee() {
     )
 }
 
-export default Coffee;
+export default NonCoffee;
