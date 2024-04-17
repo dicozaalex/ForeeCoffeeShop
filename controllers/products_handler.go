@@ -160,7 +160,6 @@ func GetProductsCoffeeByBranch(c *gin.Context) {
 
 	var product ProductForMenu
 	var products []ProductForMenu
-	var productQuantity int
 	var branch Branch
 	for rows.Next() {
 		if err := rows.Scan(
@@ -172,13 +171,13 @@ func GetProductsCoffeeByBranch(c *gin.Context) {
 			&branch.ID,
 			&branch.Name,
 			&branch.Address,
-			&productQuantity,
+			&product.ProductQuantity,
 		); err != nil {
 			log.Println(err)
 			c.JSON(400, gin.H{"error": "products not found"})
 			return
 		} else {
-			if productQuantity > 0 {
+			if product.ProductQuantity > 0 {
 				product.Status = "AVAILABLE"
 			} else {
 				product.Status = "UNAVAILABLE"

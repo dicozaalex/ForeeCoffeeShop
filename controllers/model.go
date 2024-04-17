@@ -24,11 +24,12 @@ type Branch struct {
 }
 
 type Product struct {
-	ID         int    `json:"id"`
-	Name       string `json:"name"`
-	Price      int    `json:"price"`
-	Category   string `json:"category"`
-	PictureUrl string `json:"picture_url"`
+	ID          int    `json:"id"`
+	Name        string `json:"name"`
+	Price       int    `json:"price"`
+	Category    string `json:"category"`
+	SubCategory string `json:"subcategory"`
+	PictureUrl  string `json:"picture_url"`
 }
 
 type ShortProduct struct {
@@ -37,12 +38,15 @@ type ShortProduct struct {
 }
 
 type ProductForMenu struct {
-	ID         int    `json:"id"`
-	Name       string `json:"name"`
-	Price      int    `json:"price"`
-	Category   string `json:"category"`
-	PictureUrl string `json:"picture_url"`
-	Status     string `json:"status"`
+	ID              int    `json:"id"`
+	Name            string `json:"name"`
+	Price           int    `json:"price"`
+	Category        string `json:"category"`
+	SubCategory     string `json:"subcategory"`
+	Desc            string `json:"desc"`
+	PictureUrl      string `json:"picture_url"`
+	Status          string `json:"status"`
+	ProductQuantity int    `json:"stock"`
 }
 
 type ProductsDetails struct {
