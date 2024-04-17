@@ -1,0 +1,137 @@
+* {
+  color: white;
+  font-size: x-large;
+}
+.fullScreen {
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #1c5739;
+  padding: 20px;
+}
+h1{
+  font-weight: bold;
+}
+.information {
+  display: flex;
+  flex-direction: column;
+}
+
+img {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.infoItem {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.infoText {
+  display: flex;
+  flex-direction: column;
+}
+
+.changeLocation {
+  display: flex;
+  margin-left: auto;
+}
+
+
+.infoText span{
+  font-size: smaller;
+}
+
+.circledImage{
+  width: 60px;
+  height: 60px;
+  border: 2px solid white;
+  border-radius: 100%;
+  border-width: 4px;
+  padding: 5px ;
+}
+
+.order {
+  display: flex;
+  flex-direction: column;
+}
+
+.orderHeader {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+}
+
+.orderList{
+  background-color: #54836b;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 20px;
+  
+}
+
+.orderName {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.orderName img{
+  width: 100px;
+  height: 100px;
+  margin-top: 10px;
+}
+
+.orderDetails {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  margin: 10px 0;
+}
+
+.orderItems {
+  display: flex;
+  align-items: center;
+}
+
+.orderItems img {
+  width: 25px;
+  height: 25px;
+  margin: 0 15px;
+}
+
+.orderTotalPrice {
+  display: flex;
+  justify-content: space-between; 
+  font-weight: bold;
+}
+.orderTotalDetails {
+  display: flex;
+  justify-content: space-between; 
+  font-style: italic;
+}
+
+.orderButton{
+  background-color: white;
+  font-weight: bold;
+  padding: 10px 20px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.addButton, .changeLocation{
+  background-color: white;
+  font-weight: bold;
+  padding: 10px 20px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 1000px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+}
