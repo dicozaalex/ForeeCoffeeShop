@@ -1,12 +1,15 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 
 function InsertMenu() {
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
   const [inputs, setInputs] = useState({
     productName: '',
     category: '',
     subCategory: '',
     price: '',
     stock: '',
+    desc: 'ini desc',
     photo: null
   });
 
@@ -16,10 +19,19 @@ function InsertMenu() {
     const { name, value, files } = e.target;
 
     if (name === 'photo') {
-      setInputs((prevState) => ({
-        ...prevState,
-        photo: files[0]
-      }));
+      if (files && files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          setInputs((prevState) => ({
+            ...prevState,
+            photo: files[0],
+            picture_url: e.target.result,
+          }));
+        };
+
+        reader.readAsDataURL(files[0]);
+      }
     } else {
       setInputs((prevState) => ({
         ...prevState,
@@ -37,15 +49,15 @@ function InsertMenu() {
       }
     }
   };
-  
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!checkAllFieldsFilled(inputs)) {
       alert('Please fill in all fields.');
       return;
     }
-  
+
     if (!checkStock(inputs)) {
       alert('Stock must be positive numbers.');
       return;
@@ -55,24 +67,74 @@ function InsertMenu() {
       alert('Price must be positive numbers.');
       return;
     }
-  
+
+    try {
+      await handleProductInsert(); // Wait for product update to finish
+      await handleStockUpdate();
+      console.log('Product and stock updated successfully!');
+    } catch (error) {
+      console.error('Error during update:', error);
+    }
+
+    console.log('Form submitted:', inputs);
+  }
+
+  const handleProductInsert = async () => {
+    const formData = new FormData();
+    formData.append('productName', inputs.productName);
+    formData.append('productPrice', inputs.price);
+    formData.append('category', inputs.category);
+    formData.append('subCategory', inputs.subCategory);
+    formData.append('picture_url', inputs.picture_url);
+    formData.append('desc', inputs.desc);
+    formData.append('photo', inputs.photo);
+    formData.append('stock', inputs.stock);
+
+    try {
+      const response = axios.post(`${backendUrl}/products`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      console.log('Product updated:', response.data);
+
+    } catch (error) {
+      console.error('Error updating product:', error);
+      throw error;
+    };
     console.log('Form submitted:', inputs);
   };
 
+  const handleStockUpdate = async () => {
+    const formData = new FormData();
+    formData.append('productName', inputs.productName);
+    formData.append('stock', inputs.stock);
+
+    // API still not correct (hard-coded)
+    axios.put(`${backendUrl}/productBranch/Dipatiukur, Bandung`, formData)
+      .then((response) => {
+        console.log('Stock updated:', response.data);
+      })
+      .catch((error) => {
+        console.error('Error updating stock:', error);
+        throw error;
+      });
+  };
+
   const checkAllFieldsFilled = (inputs) => {
-    // belum cek photo
-    const { productName, category, subCategory, price, stock } = inputs;
+    const { productName, category, subCategory, price, stock, photo } = inputs;
     return (
       productName &&
       category &&
       subCategory &&
       price &&
       stock &&
+      photo &&
       category !== 'Select category' &&
       subCategory !== 'Select sub-category'
     );
   };
-  
+
   const checkPrice = (inputs) => {
     const { price } = inputs;
     return !isNaN(Number(price)) && Number(price) >= 0;
@@ -86,20 +148,20 @@ function InsertMenu() {
   return (
     <div className="flex flex-col items-center justify-center h-screen" style={{ backgroundColor: '#1C5739' }}>
       <form onSubmit={handleSubmit} className="w-6/12">
-        
+
         <div className="relative w-40 h-40 mb-4 overflow-hidden flex items-center justify-center mx-auto">
           <input
-              id="photo"
-              name="photo"
-              type="file"
-              accept="image/*"
-              className="absolute inset-0 opacity-0 z-10 cursor-pointer"
-              onChange={handleChange}
-              style={{ zIndex: 4 }}
-            />
+            id="photo"
+            name="photo"
+            type="file"
+            accept="image/*"
+            className="absolute inset-0 opacity-0 z-10 cursor-pointer"
+            onChange={handleChange}
+            style={{ zIndex: 4 }}
+          />
           <div className="absolute inset-0 bg-gray-300 opacity-50" style={{ zIndex: 2 }}></div>
           <img
-            src={`${process.env.PUBLIC_URL}/assets/InsertMenu/exampleFoodDrink.png`}
+            src={inputs.photo ? URL.createObjectURL(inputs.photo) : process.env.PUBLIC_URL + "/assets/InsertMenu/exampleFoodDrink.png"}
             alt="Food and Drink"
             className="w-full h-full object-cover"
             style={{ zIndex: 1 }}
@@ -192,7 +254,7 @@ function InsertMenu() {
         </div>
 
         <div className="items-center flex flex-col justify-center">
-          <button type="submit" className="rounded-lg w-8/12 p-2 mt-14 mb-2 text-xl text-white" style={{ backgroundColor: '#AC874E'}}>Save</button>
+          <button type="submit" className="rounded-lg w-8/12 p-2 mt-14 mb-2 text-xl text-white" style={{ backgroundColor: '#AC874E' }}>Save</button>
         </div>
       </form>
     </div>

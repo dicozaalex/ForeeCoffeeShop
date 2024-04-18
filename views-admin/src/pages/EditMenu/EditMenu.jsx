@@ -11,6 +11,7 @@ function EditMenu() {
     price: '',
     stock: '',
     picture_url: '',
+    desc: '',
   });
 
   const [subCategories, setSubCategories] = useState([]);
@@ -35,6 +36,7 @@ function EditMenu() {
           price: productData.price ? productData.price.toString() : '',
           stock: productData.stock ? productData.stock.toString() : '',
           picture_url: productData.picture_url,
+          desc: productData.desc,
           photo: null,
         }));
 
@@ -124,7 +126,6 @@ function EditMenu() {
   };
 
   const checkAllFieldsFilled = (inputs) => {
-    // belum cek photo
     const { productName, category, subCategory, price, stock } = inputs;
     return (
       productName &&
@@ -155,6 +156,7 @@ function EditMenu() {
     formData.append('category', inputs.category);
     formData.append('subCategory', inputs.subCategory);
     formData.append('picture_url', inputs.picture_url);
+    formData.append('desc', inputs.desc);
     formData.append('photo', inputs.photo);
 
     try {

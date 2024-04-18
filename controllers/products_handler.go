@@ -402,13 +402,12 @@ func InsertProduct(c *gin.Context) {
 	db := connect()
 	defer db.Close()
 
-	var newProduct Product
-
-	if errBind := c.Bind(&newProduct); errBind != nil {
-		fmt.Print(errBind)
-		c.AbortWithStatus(http.StatusBadRequest)
-		return
-	}
+	productName := c.PostForm("productName")
+	productPrice := c.PostForm("productPrice")
+	productCategory := c.PostForm("category")
+	productSubCategory := c.PostForm("subCategory")
+	productDesc := c.PostForm("desc")
+	productQuantity := c.PostForm("stock")
 
 	file, _, err := c.Request.FormFile("photo")
 	if err != nil {
@@ -432,32 +431,33 @@ func InsertProduct(c *gin.Context) {
 
 	base64Image := base64.StdEncoding.EncodeToString(imageBytes)
 	client, _ := imgur.NewClient(new(http.Client), "ad02267f3d1ac90", "")
-	imageInfo, _, err := client.UploadImage([]byte(base64Image), "", "base64", newProduct.Name, newProduct.Name)
+	imageInfo, _, err := client.UploadImage([]byte(base64Image), "", "base64", productName, productName)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "File error"})
 		return
 	}
 
-	newProduct.PictureUrl = imageInfo.Link
+	PictureUrl := imageInfo.Link
 
-	if newProduct.Name == "" || newProduct.Price <= 0 || newProduct.Category == "" || newProduct.SubCategory == "" || newProduct.PictureUrl == "" {
+	if productName == "" || productPrice == "" || productCategory == "" || productSubCategory == "" || PictureUrl == "" || productDesc == "" || productQuantity == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Input product cannot be empty"})
 		return
 	}
 
 	var oldProduct int
-	errGetOldProduct := db.QueryRow("SELECT `id` FROM `products` WHERE `name`=?", newProduct.Name).Scan(&oldProduct)
+	errGetOldProduct := db.QueryRow("SELECT `id` FROM `products` WHERE `name`=?", productName).Scan(&oldProduct)
 	if errGetOldProduct != sql.ErrNoRows {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Product existed already"})
 		return
 	}
 
-	_, errQueryInsertProduct := db.Query("INSERT INTO products (name, price, category, subcategory, pictureUrl) VALUES (?,?,?,?,?)",
-		newProduct.Name,
-		newProduct.Price,
-		newProduct.Category,
-		newProduct.SubCategory,
-		newProduct.PictureUrl,
+	_, errQueryInsertProduct := db.Query("INSERT INTO products (name, price, category, subcategory, pictureUrl, `desc`) VALUES (?,?,?,?,?,?)",
+		productName,
+		productPrice,
+		productCategory,
+		productSubCategory,
+		PictureUrl,
+		productDesc,
 	)
 
 	if errQueryInsertProduct != nil {
@@ -466,7 +466,8 @@ func InsertProduct(c *gin.Context) {
 		return
 	}
 
-	errGetNewProductId := db.QueryRow("SELECT `id` FROM `products` WHERE `name`=?", newProduct.Name).Scan(&newProduct.ID)
+	var newProductID int
+	errGetNewProductId := db.QueryRow("SELECT `id` FROM `products` WHERE `name`=?", productName).Scan(&newProductID)
 	if errGetNewProductId != nil {
 		fmt.Println(errGetNewProductId)
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Get new product ID failed"})
@@ -476,7 +477,6 @@ func InsertProduct(c *gin.Context) {
 	var response Response
 	response.Status = http.StatusOK
 	response.Message = http.StatusText(http.StatusOK)
-	response.Data = newProduct
 	c.JSON(http.StatusOK, response)
 }
 
@@ -490,6 +490,7 @@ func UpdateProduct(c *gin.Context) {
 	productCategory := c.PostForm("category")
 	productSubCategory := c.PostForm("subCategory")
 	productUrl := c.PostForm("picture_url")
+	productDesc := c.PostForm("desc")
 	file, _, err := c.Request.FormFile("photo")
 	if file != nil {
 		if err != nil {
@@ -544,7 +545,7 @@ func UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	_, err = db.Exec("UPDATE products SET name= ?, price= ?, pictureurl= ?, category= ?, subcategory= ? WHERE id=?", productName, productPrice, productUrl, productCategory, productSubCategory, productId)
+	_, err = db.Exec("UPDATE products SET name= ?, price= ?, pictureurl= ?, category= ?, subcategory= ?, desc = ? WHERE id=?", productName, productPrice, productUrl, productCategory, productSubCategory, productDesc, productId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error in update query"})
 		return
