@@ -528,6 +528,7 @@ func UpdateProduct(c *gin.Context) {
 	fmt.Println("productUrl = ", productUrl)
 	fmt.Println("productCategory = ", productCategory)
 	fmt.Println("productSubCategory = ", productSubCategory)
+	fmt.Println("productDesc = ", productDesc)
 
 	var product Product
 
@@ -545,8 +546,9 @@ func UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	_, err = db.Exec("UPDATE products SET name= ?, price= ?, pictureurl= ?, category= ?, subcategory= ?, desc = ? WHERE id=?", productName, productPrice, productUrl, productCategory, productSubCategory, productDesc, productId)
+	_, err = db.Exec("UPDATE products SET name= ?, price= ?, pictureurl= ?, category= ?, subcategory= ?, `desc`= ? WHERE id=?", productName, productPrice, productUrl, productCategory, productSubCategory, productDesc, productId)
 	if err != nil {
+		fmt.Print(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error in update query"})
 		return
 	}
