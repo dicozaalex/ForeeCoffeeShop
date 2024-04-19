@@ -74,7 +74,8 @@ func main() {
 
 	// Product Branch
 	productBranchRoutes := router.Group("/productBranch")
-	productBranchRoutes.POST("/:branchName", controllers.AuthMiddleware("ADMIN"), controllers.InsertMenuBranch)
+	// productBranchRoutes.POST("/:branchName", controllers.AuthMiddleware("ADMIN"), controllers.InsertMenuBranch)
+	productBranchRoutes.POST("/:branchName", controllers.InsertMenuBranch)
 	// productBranchRoutes.PUT("/:branchName", controllers.AuthMiddleware("ADMIN"), controllers.UpdateMenuBranch)
 	productBranchRoutes.PUT("/:branchName", controllers.UpdateMenuBranch)
 	productBranchRoutes.DELETE("/:branchName", controllers.AuthMiddleware("ADMIN"), controllers.DeleteMenuBranch)
