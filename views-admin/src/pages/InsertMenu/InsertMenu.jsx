@@ -9,7 +9,7 @@ function InsertMenu() {
     subCategory: '',
     price: '',
     stock: '',
-    desc: 'ini desc',
+    desc: '',
     photo: null
   });
 
@@ -40,14 +40,22 @@ function InsertMenu() {
     }
 
     if (name === 'category') {
-      if (value === 'Coffee') {
-        setSubCategories(['Latte', 'Flavoured Coffee']);
-      } else if (value === 'Non-Coffee') {
-        setSubCategories(['Chocolate', 'Refresher']);
-      } else if (value === 'Donut') {
-        setSubCategories(['Donuts']);
+      if (value === 'COFFEE') {
+        setSubCategories(['LATTE', 'FLAVOURED COFFEE']);
+      } else if (value === 'NON COFFEE') {
+        setSubCategories(['CHOCOLATE', 'REFRESHER']);
+      } else if (value === 'DONUT') {
+        setSubCategories(['DONUTS']);
       }
     }
+
+    if (name === 'desc') {
+      setInputs((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
+
   };
 
   const handleSubmit = async (e) => {
@@ -68,61 +76,61 @@ function InsertMenu() {
       return;
     }
 
-    try {
-      await handleProductInsert(); // Wait for product update to finish
-      await handleStockUpdate();
-      console.log('Product and stock updated successfully!');
-    } catch (error) {
-      console.error('Error during update:', error);
-    }
+    handleProductInsert()
+      .then(() => {
+        alert('Updated Success');
+      })
+      .catch((error) => {
+        console.error('Error updating:', error);
+      });
 
     console.log('Form submitted:', inputs);
   }
 
-  const handleProductInsert = async () => {
-    const formData = new FormData();
-    formData.append('productName', inputs.productName);
-    formData.append('productPrice', inputs.price);
-    formData.append('category', inputs.category);
-    formData.append('subCategory', inputs.subCategory);
-    formData.append('picture_url', inputs.picture_url);
-    formData.append('desc', inputs.desc);
-    formData.append('photo', inputs.photo);
-    formData.append('stock', inputs.stock);
+  const handleProductInsert = async() => {
+    const productFormData = new FormData();
+    productFormData.append('productName', inputs.productName);
+    productFormData.append('productPrice', inputs.price);
+    productFormData.append('category', inputs.category);
+    productFormData.append('subCategory', inputs.subCategory);
+    productFormData.append('picture_url', inputs.picture_url);
+    productFormData.append('desc', inputs.desc);
+    productFormData.append('photo', inputs.photo);
+    productFormData.append('stock', inputs.stock);
 
     try {
-      const response = axios.post(`${backendUrl}/products`, formData, {
+      const productResponse = await axios.post(`${backendUrl}/products`, productFormData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
-      console.log('Product updated:', response.data);
+      console.log('Product inserted:', productResponse.data);
 
+      handleStockInsert();
+      
     } catch (error) {
-      console.error('Error updating product:', error);
+      console.error('Error inserting product:', error);
       throw error;
     };
     console.log('Form submitted:', inputs);
   };
 
-  const handleStockUpdate = async () => {
-    const formData = new FormData();
-    formData.append('productName', inputs.productName);
-    formData.append('stock', inputs.stock);
-
-    // API still not correct (hard-coded)
-    axios.put(`${backendUrl}/productBranch/Dipatiukur, Bandung`, formData)
-      .then((response) => {
-        console.log('Stock updated:', response.data);
-      })
-      .catch((error) => {
-        console.error('Error updating stock:', error);
-        throw error;
-      });
-  };
+  const handleStockInsert = async () => {
+    const StockFormData = new FormData();
+    StockFormData.append('productName', inputs.productName);
+    StockFormData.append('stock', inputs.stock);
+  
+    try {
+      const stockResponse = await axios.post(`${backendUrl}/productBranch/Dipatiukur, Bandung`, StockFormData);
+      console.log('Stock inserted:', stockResponse.data);
+    } catch (error) {
+      console.error('Error inserting stock:', error);
+      throw error;
+    }
+  };  
 
   const checkAllFieldsFilled = (inputs) => {
-    const { productName, category, subCategory, price, stock, photo } = inputs;
+    const { productName, category, subCategory, price, stock, photo, desc } = inputs;
     return (
       productName &&
       category &&
@@ -130,6 +138,7 @@ function InsertMenu() {
       price &&
       stock &&
       photo &&
+      desc &&
       category !== 'Select category' &&
       subCategory !== 'Select sub-category'
     );
@@ -159,7 +168,6 @@ function InsertMenu() {
             onChange={handleChange}
             style={{ zIndex: 4 }}
           />
-          <div className="absolute inset-0 bg-gray-300 opacity-50" style={{ zIndex: 2 }}></div>
           <img
             src={inputs.photo ? URL.createObjectURL(inputs.photo) : process.env.PUBLIC_URL + "/assets/InsertMenu/exampleFoodDrink.png"}
             alt="Food and Drink"
@@ -199,9 +207,9 @@ function InsertMenu() {
             style={{ backgroundColor: '#1C5739', color: 'white' }}
           >
             <option value="">Select category</option>
-            <option value="Coffee">Coffee</option>
-            <option value="Non-Coffee">Non-Coffee</option>
-            <option value="Donut">Donut</option>
+            <option value="COFFEE">COFFEE</option>
+            <option value="NON COFFEE">NON COFFEE</option>
+            <option value="DONUT">DONUT</option>
           </select>
         </div>
 
@@ -253,9 +261,29 @@ function InsertMenu() {
           />
         </div>
 
-        <div className="items-center flex flex-col justify-center">
-          <button type="submit" className="rounded-lg w-8/12 p-2 mt-14 mb-2 text-xl text-white" style={{ backgroundColor: '#AC874E' }}>Save</button>
+        <div className="mb-3">
+          <label className="text-xl text-white" htmlFor="desc">Description</label>
+          <textarea
+            id="desc"
+            name="desc"
+            className="block p-2 w-full border border-solid border-white bg-brand resize-none"
+            placeholder="Enter description"
+            value={inputs.desc}
+            onChange={handleChange}
+            style={{
+              marginTop: '10px',
+              boxShadow: 'inset 0 0 5px rgba(0, 0, 0, 0.2)',
+              color: 'white',
+              height: '120px',
+              backgroundColor: '#25734B',
+            }}
+          />
         </div>
+
+        <div className="items-center flex flex-col justify-center">
+          <button type="submit" className="rounded-lg w-8/12 p-2 mt-9 mb-2 text-xl text-white" style={{ backgroundColor: '#AC874E' }}>Save</button>
+        </div>
+
       </form>
     </div>
   );

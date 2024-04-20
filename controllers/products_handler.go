@@ -409,6 +409,15 @@ func InsertProduct(c *gin.Context) {
 	productDesc := c.PostForm("desc")
 	productQuantity := c.PostForm("stock")
 
+	fmt.Println("===========fmt INSERT PRODUCT===============")
+	fmt.Println("productName = ", productName)
+	fmt.Println("productPrice = ", productPrice)
+	fmt.Println("productCategory = ", productCategory)
+	fmt.Println("productSubCategory = ", productSubCategory)
+	fmt.Println("productDesc = ", productDesc)
+	fmt.Println("productStock = ", productQuantity)
+	fmt.Println("===========fmt INSERT PRODUCT===============")
+
 	file, _, err := c.Request.FormFile("photo")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing product image"})
