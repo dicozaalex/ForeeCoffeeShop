@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -77,8 +78,8 @@ func RekapOrder(c *gin.Context) []ProductDetail {
 	var productDetail ProductDetail
 
 	rows, err := db.Query("SELECT p.Name, SUM(od.quantity), p.price FROM OrderDetails od" +
-		" JOIN `Order` o ON o.id = od.orderId JOIN Product p ON p.id = od.productId WHERE" +
-		" o.transactionTime >= DATE(NOW() - INTERVAL 1 DAY) AND o.transactionTime < DATE(NOW()) AND" +
+		" JOIN `Orders` o ON o.id = od.orderId JOIN Products p ON p.id = od.productId WHERE" +
+		" o.transactionTime >= DATE(NOW() - INTERVAL 1 DAY) AND" +
 		" o.`status` = 'COMPLETED' GROUP BY p.id")
 	if err != nil {
 		log.Println(err)
@@ -119,7 +120,10 @@ func SendEmail(c *gin.Context) {
 	investors := GetOwners(c)
 	productDetails := RekapOrder(c)
 
+	fmt.Println(productDetails)
+
 	if investors == nil || productDetails == nil {
+		fmt.Println("kosong")
 		return
 	}
 
@@ -173,7 +177,7 @@ func CacheProdukGambar() {
 	db := connect()
 	defer db.Close()
 
-	rows, err := db.Query("SELECT name, pictureurl FROM product")
+	rows, err := db.Query("SELECT name, pictureurl FROM products")
 	if err != nil {
 		panic(err)
 	}

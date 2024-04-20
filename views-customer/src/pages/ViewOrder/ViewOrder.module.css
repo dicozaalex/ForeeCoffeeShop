@@ -1,8 +1,6 @@
-* {
+.fullScreen {
   color: white;
   font-size: x-large;
-}
-.fullScreen {
   justify-content: center;
   align-items: center;
   min-height: 100vh;

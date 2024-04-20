@@ -1,15 +1,13 @@
-* {
+.fullScreen {
   color: white;
   font-size: x-large;
-}
-.fullScreen {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   background-color: #1c5739;
   padding: 20px;
 }
-h1{
+.h1 {
   font-weight: bold;
 }
 .information {
@@ -17,7 +15,7 @@ h1{
   flex-direction: column;
 }
 
-img {
+.img {
   width: 50px;
   height: 50px;
   margin-right: 10px;
