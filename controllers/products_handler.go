@@ -200,7 +200,7 @@ func GetProductsCoffeeByBranch(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func GetProductsYakultByBranch(c *gin.Context) {
+func GetProductsNonCoffeeByBranch(c *gin.Context) {
 	db := connect()
 	defer db.Close()
 
@@ -226,7 +226,6 @@ func GetProductsYakultByBranch(c *gin.Context) {
 
 	var product ProductForMenu
 	var products []ProductForMenu
-	var productQuantity int
 	var branch Branch
 	for rows.Next() {
 		if err := rows.Scan(
@@ -238,13 +237,13 @@ func GetProductsYakultByBranch(c *gin.Context) {
 			&branch.ID,
 			&branch.Name,
 			&branch.Address,
-			&productQuantity,
+			&product.ProductQuantity,
 		); err != nil {
 			log.Println(err)
 			c.JSON(400, gin.H{"error": "products not found"})
 			return
 		} else {
-			if productQuantity > 0 {
+			if product.ProductQuantity > 0 {
 				product.Status = "AVAILABLE"
 			} else {
 				product.Status = "UNAVAILABLE"
@@ -264,11 +263,12 @@ func GetProductsYakultByBranch(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func GetProductsTeaByBranch(c *gin.Context) {
+func GetProductsDonutByBranch(c *gin.Context) {
 	db := connect()
 	defer db.Close()
 
 	branchName := c.Query("Branch")
+
 	if branchName == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Input branch cannot be empty"})
 		return
@@ -278,7 +278,7 @@ func GetProductsTeaByBranch(c *gin.Context) {
 		"FROM products p " +
 		"JOIN branchproduct bp ON p.id=bp.productId " +
 		"JOIN branches b ON bp.branchId=b.id " +
-		"WHERE b.name=? AND p.category='TEA'"
+		"WHERE b.name=? AND p.category='DONUT'"
 
 	rows, err := db.Query(query, branchName)
 	if err != nil {
@@ -301,7 +301,7 @@ func GetProductsTeaByBranch(c *gin.Context) {
 			&branch.ID,
 			&branch.Name,
 			&branch.Address,
-			&productQuantity,
+			&product.ProductQuantity,
 		); err != nil {
 			log.Println(err)
 			c.JSON(400, gin.H{"error": "products not found"})
