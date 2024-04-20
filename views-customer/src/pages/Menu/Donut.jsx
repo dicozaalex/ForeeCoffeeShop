@@ -2,33 +2,34 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar/Navbar';
 
-function NonCoffee() {
+function Donut() {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
-    const [menuNonCoffee, setMenuNonCoffee] = useState([]);
+    const [menuDonut, setMenuDonut] = useState([]);
     const [counters, setCounters] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchMenuNonCoffee();
+        fetchMenuDonut();
     }, []);
 
-    const fetchMenuNonCoffee = async () => {
+    const fetchMenuDonut = async () => {
         try {
-            const response = await fetch(`${backendUrl}/products/noncoffee?Branch=Griya Buah Batu`);
+            const response = await fetch(`${backendUrl}/products/donut?Branch=Griya Buah Batu`);
             if (!response.ok) {
                 throw new Error('Failed to fetch menu items');
             }
             const data = await response.json();
-            setMenuNonCoffee(data.data);
+            console.log(data.data);
+            setMenuDonut(data.data);
             initializeCounters(data.data);
         } catch (error) {
             console.error('Error fetching menu items:', error);
         }
     };
 
-    const initializeCounters = (menuItemsData) => {
+    const initializeCounters = (menuDonutsData) => {
         const countersObj = {};
-        menuItemsData.products.forEach(product => {
+        menuDonutsData.products.forEach(product => {
             countersObj[product.id] = 0;
         });
         setCounters(countersObj);
@@ -61,8 +62,8 @@ function NonCoffee() {
                 <h2 className="text-white text-2xl bold-text mb-4 ml-4 my-4">Recommended</h2>
                 <hr className="mx-4 my-4"></hr>
                 <div className="menu-row">
-                {menuNonCoffee.products && menuNonCoffee.products.length > 0 &&
-                    menuNonCoffee.products.map((product, index) => (
+                {menuDonut.products && menuDonut.products.length > 0 &&
+                    menuDonut.products.map((product, index) => (
                         <div key={index} className="menu-item flex justify-between items-center mx-4 my-4">
                             <div className="menu-item flex items-center">
                                 <img src={product.picture_url} alt={product.name} width="70px"></img>
@@ -104,4 +105,4 @@ function NonCoffee() {
     )
 }
 
-export default NonCoffee;
+export default Donut;
