@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar/Navbar';
 
 function Coffee() {
@@ -56,8 +56,8 @@ function Coffee() {
 
     return (
         <>
+            <Navbar />
             <div className='h-screen'>
-                <Navbar />
                 <h2 className="text-white text-2xl bold-text mb-4 ml-4 my-4">Recommended</h2>
                 <hr className="mx-4 my-4"></hr>
                 <div className="menu-row">

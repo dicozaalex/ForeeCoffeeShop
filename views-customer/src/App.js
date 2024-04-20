@@ -3,6 +3,7 @@ import React from 'react';
 import Home from './pages/Home/Home.jsx';
 import Coffee from './pages/Menu/Coffee.jsx';
 import NonCoffee from './pages/Menu/NonCoffee.jsx';
+import Donut from './pages/Menu/Donut.jsx';
 import Register from "./pages/Register/Register.jsx";
 import Payment from './pages/Payment/Payment.jsx';
 import PaymentGateway from "./pages/PaymentGateway/PaymentGateway.jsx";
@@ -20,6 +21,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/coffee" element={<Coffee />} />
           <Route path="/non-coffee" element={<NonCoffee />} />
+          <Route path="/donut" element={<Donut />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/payment-gateway" element={<PaymentGateway />} />
           <Route path="/view-order-delivery" element={<ViewOrderDelivery />} />

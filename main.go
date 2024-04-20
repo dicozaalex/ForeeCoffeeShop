@@ -50,8 +50,8 @@ func main() {
 	// productsRoutes.GET("/name", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetProductByNameAndBranch)
 	productsRoutes.GET("/name", controllers.GetProductByNameAndBranch)
 	productsRoutes.GET("/coffee", controllers.GetProductsCoffeeByBranch)
-	productsRoutes.GET("/tea", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetProductsTeaByBranch)
-	productsRoutes.GET("/yakult", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetProductsYakultByBranch)
+	productsRoutes.GET("/noncoffee", controllers.GetProductsNonCoffeeByBranch)
+	productsRoutes.GET("/donut", controllers.GetProductsDonutByBranch)
 
 	// productsRoutes.POST("", controllers.AuthMiddleware("ADMIN"), controllers.InsertProduct)
 	productsRoutes.POST("", controllers.InsertProduct)
