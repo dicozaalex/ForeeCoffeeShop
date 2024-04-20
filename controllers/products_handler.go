@@ -415,18 +415,10 @@ func InsertProduct(c *gin.Context) {
 		return
 	}
 
-	var imageBytes []byte
-	buffer := make([]byte, 1024)
-	for {
-		n, err := file.Read(buffer)
-		if err != nil {
-			if err != io.EOF {
-				c.JSON(http.StatusBadRequest, gin.H{"error": "File error"})
-				return
-			}
-			break
-		}
-		imageBytes = append(imageBytes, buffer[:n]...)
+	imageBytes, err := io.ReadAll(file)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "File error"})
+		return
 	}
 
 	base64Image := base64.StdEncoding.EncodeToString(imageBytes)
@@ -498,18 +490,10 @@ func UpdateProduct(c *gin.Context) {
 			return
 		}
 
-		var imageBytes []byte
-		buffer := make([]byte, 1024)
-		for {
-			n, err := file.Read(buffer)
-			if err != nil {
-				if err != io.EOF {
-					c.JSON(http.StatusBadRequest, gin.H{"error": "File error"})
-					return
-				}
-				break
-			}
-			imageBytes = append(imageBytes, buffer[:n]...)
+		imageBytes, err := io.ReadAll(file)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "File error"})
+			return
 		}
 
 		base64Image := base64.StdEncoding.EncodeToString(imageBytes)
