@@ -78,7 +78,7 @@ function InsertMenu() {
 
     handleProductInsert()
       .then(() => {
-        alert('Updated Success');
+        alert('Insert Success');
       })
       .catch((error) => {
         console.error('Error updating:', error);

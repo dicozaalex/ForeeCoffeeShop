@@ -3,7 +3,6 @@ package controllers
 import (
 	"database/sql"
 	"encoding/base64"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -409,15 +408,6 @@ func InsertProduct(c *gin.Context) {
 	productDesc := c.PostForm("desc")
 	productQuantity := c.PostForm("stock")
 
-	fmt.Println("===========fmt INSERT PRODUCT===============")
-	fmt.Println("productName = ", productName)
-	fmt.Println("productPrice = ", productPrice)
-	fmt.Println("productCategory = ", productCategory)
-	fmt.Println("productSubCategory = ", productSubCategory)
-	fmt.Println("productDesc = ", productDesc)
-	fmt.Println("productStock = ", productQuantity)
-	fmt.Println("===========fmt INSERT PRODUCT===============")
-
 	file, _, err := c.Request.FormFile("photo")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing product image"})
@@ -478,7 +468,6 @@ func InsertProduct(c *gin.Context) {
 	var newProductID int
 	errGetNewProductId := db.QueryRow("SELECT `id` FROM `products` WHERE `name`=?", productName).Scan(&newProductID)
 	if errGetNewProductId != nil {
-		fmt.Println(errGetNewProductId)
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Get new product ID failed"})
 		return
 	}
@@ -532,13 +521,6 @@ func UpdateProduct(c *gin.Context) {
 		productUrl = imageInfo.Link
 	}
 
-	fmt.Println("productName = ", productName)
-	fmt.Println("productPrice = ", productPrice)
-	fmt.Println("productUrl = ", productUrl)
-	fmt.Println("productCategory = ", productCategory)
-	fmt.Println("productSubCategory = ", productSubCategory)
-	fmt.Println("productDesc = ", productDesc)
-
 	var product Product
 
 	errGetOldProduct := db.QueryRow("SELECT id, name, price FROM products WHERE id = ?", productId).Scan(&product.ID, &product.Name, &product.Price)
@@ -557,7 +539,6 @@ func UpdateProduct(c *gin.Context) {
 
 	_, err = db.Exec("UPDATE products SET name= ?, price= ?, pictureurl= ?, category= ?, subcategory= ?, `desc`= ? WHERE id=?", productName, productPrice, productUrl, productCategory, productSubCategory, productDesc, productId)
 	if err != nil {
-		fmt.Print(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error in update query"})
 		return
 	}

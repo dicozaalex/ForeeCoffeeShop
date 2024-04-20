@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -18,17 +17,11 @@ func InsertMenuBranch(c *gin.Context) {
 	productName := c.PostForm("productName")
 	productStok := c.PostForm("stock")
 
-	fmt.Println("baru d tarik [branchName] = ", branchName)
-	fmt.Println("baru d tarik [productName] = ", productName)
-	fmt.Println("baru d tarik [productStock] = ", productStok)
-
 	var branch Branch
 	queryBranch := "SELECT id, name, address FROM `branches` WHERE name = ?"
 	row, _ := db.Prepare(queryBranch)
 	err := row.QueryRow(branchName).Scan(&branch.ID, &branch.Name, &branch.Address)
 	if err != nil {
-		fmt.Println("queryBranch")
-		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "Nama Branch tidak ditemukan",
 			"status":  http.StatusBadRequest,
@@ -38,12 +31,8 @@ func InsertMenuBranch(c *gin.Context) {
 
 	var product Product
 	err = db.QueryRow("SELECT `id` FROM `products` WHERE `name`= ?", productName).Scan(&product.ID)
-	fmt.Println("product ID:", product.ID)
-	fmt.Println("product Name:", productName)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			fmt.Println("queryProduct")
-			fmt.Println(err)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"message": "Product tidak tersedia di list product...",
 				"status":  http.StatusBadRequest,
@@ -63,8 +52,6 @@ func InsertMenuBranch(c *gin.Context) {
 	if err != nil && err != sql.ErrNoRows {
 		c.AbortWithStatus(http.StatusBadRequest)
 		log.Println("error 2: ", err)
-		fmt.Println("query bp product quantity")
-		fmt.Println(err)
 		return
 	}
 	if productQuantity != 0 {
@@ -83,8 +70,6 @@ func InsertMenuBranch(c *gin.Context) {
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		log.Println(err)
-		fmt.Println("query insert")
-		fmt.Println(err)
 		return
 	}
 
