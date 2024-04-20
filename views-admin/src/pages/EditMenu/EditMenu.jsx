@@ -51,7 +51,7 @@ function EditMenu() {
       .catch((error) => {
         console.error('Error fetching product data:', error);
       });
-  }, []);
+  }, [backendUrl]);
 
 
   useEffect(() => {
@@ -94,6 +94,14 @@ function EditMenu() {
         setSubCategories(['DONUTS']);
       }
     }
+
+    if (name === 'desc') {
+      setInputs((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
+
   };
 
   const handleSubmit = (e) => {
@@ -126,13 +134,14 @@ function EditMenu() {
   };
 
   const checkAllFieldsFilled = (inputs) => {
-    const { productName, category, subCategory, price, stock } = inputs;
+    const { productName, category, subCategory, price, stock, desc } = inputs;
     return (
       productName &&
       category &&
       subCategory &&
       price &&
       stock &&
+      desc &&
       category !== 'Select category' &&
       subCategory !== 'Select sub-category'
     );
@@ -210,7 +219,7 @@ function EditMenu() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen" style={{ backgroundColor: '#1C5739' }}>
+    <div className="flex flex-col items-center justify-center min-h-screen" style={{ backgroundColor: '#1C5739', paddingTop: '4rem' }}>
       <form onSubmit={handleSubmit} className="w-6/12">
 
         <div className="relative w-40 h-40 mb-4 overflow-hidden flex items-center justify-center mx-auto">
@@ -316,9 +325,29 @@ function EditMenu() {
           />
         </div>
 
+        <div className="mb-3">
+          <label className="text-xl text-white" htmlFor="desc">Description</label>
+          <textarea
+            id="desc"
+            name="desc"
+            className="block p-2 w-full border border-solid border-white bg-brand resize-none"
+            placeholder="Enter description"
+            value={inputs.desc}
+            onChange={handleChange}
+            style={{
+              marginTop: '10px',
+              boxShadow: 'inset 0 0 5px rgba(0, 0, 0, 0.2)',
+              color: 'white',
+              height: '120px',
+              backgroundColor: '#25734B',
+            }}
+          />
+        </div>
+
         <div className="items-center flex flex-col justify-center">
           <button type="submit" className="rounded-lg w-8/12 p-2 mt-14 mb-2 text-xl text-white" style={{ backgroundColor: '#AC874E' }}>Save Changes</button>
           <button type="button" onClick={handleDelete} className="rounded-lg w-8/12 p-2 mt-6 mb-2 text-xl text-white" style={{ backgroundColor: '#CB4A4A' }}>Delete Menu</button>
+          <div style={{ marginBottom: '100px' }}></div>
         </div>
       </form>
     </div>
