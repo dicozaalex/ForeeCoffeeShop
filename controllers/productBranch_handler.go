@@ -13,12 +13,12 @@ func InsertMenuBranch(c *gin.Context) {
 	db := connect()
 	defer db.Close()
 
-	branchName := "%" + c.Param("branchName") + "%"
-	productName := "%" + c.PostForm("productName") + "%"
+	branchName := c.Param("branchName")
+	productName := c.PostForm("productName")
 	productStok := c.PostForm("stock")
 
 	var branch Branch
-	queryBranch := "SELECT id, name, address FROM `branches` WHERE name LIKE ?"
+	queryBranch := "SELECT id, name, address FROM `branches` WHERE name = ?"
 	row, _ := db.Prepare(queryBranch)
 	err := row.QueryRow(branchName).Scan(&branch.ID, &branch.Name, &branch.Address)
 	if err != nil {
@@ -29,10 +29,8 @@ func InsertMenuBranch(c *gin.Context) {
 		return
 	}
 
-	query := "SELECT id, name, price, pictureUrl, category FROM `product` WHERE name LIKE ?"
-	rows, _ := db.Prepare(query)
 	var product Product
-	err = rows.QueryRow(productName).Scan(&product.ID, &product.Name, &product.Price, &product.PictureUrl, &product.Category)
+	err = db.QueryRow("SELECT `id` FROM `products` WHERE `name`= ?", productName).Scan(&product.ID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusBadRequest, gin.H{
@@ -46,8 +44,8 @@ func InsertMenuBranch(c *gin.Context) {
 		return
 	}
 
-	query = "SELECT bp.productQuantity FROM `branchproduct` bp JOIN branches b ON bp.branchId = b.id WHERE bp.productId = ? AND b.id = ?"
-	rows, _ = db.Prepare(query)
+	query := "SELECT bp.productQuantity FROM `branchproduct` bp JOIN branches b ON bp.branchId = b.id WHERE bp.productId = ? AND b.id = ?"
+	rows, _ := db.Prepare(query)
 	var productQuantity int
 
 	err = rows.QueryRow(product.ID, branch.ID).Scan(&productQuantity)
