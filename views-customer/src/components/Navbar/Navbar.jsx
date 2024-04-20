@@ -18,15 +18,15 @@ function Navbar() {
           </Link>
             <Link to="/coffee" className={"items-center flex flex-col " + (url === "/coffee" ? "active-navbar" : "")}>
               <img className="m-0" src={`${process.env.PUBLIC_URL}/assets/Navbar/coffee-beans.png`} alt="Coffee"  width="40px"/>
-              <span className="text-black font-bold text-xs">COFFEE</span>
+              <span className="text-black font-bold text-md">COFFEE</span>
             </Link>
             <Link to="/non-coffee" className={"items-center flex flex-col " + (url === "/non-coffee" ? "active-navbar" : "")}>
               <img className="m-0" src={`${process.env.PUBLIC_URL}/assets/Navbar/leaves.png`} alt="Non-Coffee"  width="40px"/>
-              <span className="text-black font-bold text-xs">NON-COFFEE</span>
+              <span className="text-black font-bold text-md">NON-COFFEE</span>
             </Link>
             <Link to="/donut" className={"items-center flex flex-col " + (url === "/donut" ? "active-navbar" : "")}>
               <img className="m-0" src={`${process.env.PUBLIC_URL}/assets/Navbar/donut.png`} alt="Donut"  width="40px"/>
-              <span className="text-black font-bold text-xs">DONUT</span>
+              <span className="text-black font-bold text-md">DONUT</span>
             </Link>
         </div>
       </nav>
