@@ -77,21 +77,11 @@ func Login(c *gin.Context) {
 	id := user.ID
 	username := user.Username
 	role := user.Role
-	generateToken(c, id, username, role)
+	token := generateToken(c, id, username, role)
 
 	var response Response
 	response.Status = http.StatusOK
 	response.Message = http.StatusText(http.StatusOK)
-	response.Data = gin.H{"message": "Login successful"}
-	c.JSON(http.StatusOK, response)
-}
-
-func Logout(c *gin.Context) {
-	resetUserToken(c)
-
-	var response Response
-	response.Status = http.StatusOK
-	response.Message = http.StatusText(http.StatusOK)
-	response.Data = gin.H{"message": "Logout Success"}
+	response.Data = gin.H{"message": "Login successful", "token": token, "username": username}
 	c.JSON(http.StatusOK, response)
 }
