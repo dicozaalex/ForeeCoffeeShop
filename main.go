@@ -46,7 +46,7 @@ func main() {
 	// PRODUCTS
 	productsRoutes := router.Group("/products")
 	productsRoutes.GET("", controllers.AuthMiddleware("ADMIN"), controllers.GetAllProductsAndTheirBranches)
-	productsRoutes.GET("/branch", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetAllProductsByBranch)
+	productsRoutes.GET("/branch", controllers.GetAllProductsByBranch)
 	// productsRoutes.GET("/name", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetProductByNameAndBranch)
 	productsRoutes.GET("/name", controllers.GetProductByNameAndBranch)
 	productsRoutes.GET("/coffee", controllers.GetProductsCoffeeByBranch)

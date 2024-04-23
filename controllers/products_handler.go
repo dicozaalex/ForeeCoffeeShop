@@ -84,7 +84,7 @@ func GetAllProductsByBranch(c *gin.Context) {
 		return
 	}
 
-	query := "SELECT p.id, p.name, p.price, p.pictureUrl, p.category, b.id, b.name, b.address, bp.productQuantity " +
+	query := "SELECT p.id, p.name, p.price, p.pictureUrl, p.category, p.subcategory, b.id, b.name, b.address, bp.productQuantity, p.desc " +
 		"FROM products p " +
 		"JOIN branchproduct bp ON p.id=bp.productId " +
 		"JOIN branches b ON bp.branchId=b.id " +
@@ -99,7 +99,6 @@ func GetAllProductsByBranch(c *gin.Context) {
 
 	var product ProductForMenu
 	var products []ProductForMenu
-	var productQuantity int
 	var branch Branch
 	for rows.Next() {
 		if err := rows.Scan(
@@ -108,16 +107,18 @@ func GetAllProductsByBranch(c *gin.Context) {
 			&product.Price,
 			&product.PictureUrl,
 			&product.Category,
+			&product.SubCategory,
 			&branch.ID,
 			&branch.Name,
 			&branch.Address,
-			&productQuantity,
+			&product.ProductQuantity,
+			&product.Desc,
 		); err != nil {
 			log.Println(err)
 			c.JSON(400, gin.H{"error": "products not found"})
 			return
 		} else {
-			if productQuantity > 0 {
+			if product.ProductQuantity > 0 {
 				product.Status = "AVAILABLE"
 			} else {
 				product.Status = "UNAVAILABLE"
@@ -148,7 +149,7 @@ func GetProductsCoffeeByBranch(c *gin.Context) {
 		return
 	}
 
-	query := "SELECT p.id, p.name, p.price, p.pictureUrl, p.category, b.id, b.name, b.address, bp.productQuantity " +
+	query := "SELECT p.id, p.name, p.price, p.pictureUrl, p.category, p.subcategory, b.id, b.name, b.address, bp.productQuantity, p.desc " +
 		"FROM products p " +
 		"JOIN branchproduct bp ON p.id=bp.productId " +
 		"JOIN branches b ON bp.branchId=b.id " +
@@ -171,10 +172,12 @@ func GetProductsCoffeeByBranch(c *gin.Context) {
 			&product.Price,
 			&product.PictureUrl,
 			&product.Category,
+			&product.SubCategory,
 			&branch.ID,
 			&branch.Name,
 			&branch.Address,
 			&product.ProductQuantity,
+			&product.Desc,
 		); err != nil {
 			log.Println(err)
 			c.JSON(400, gin.H{"error": "products not found"})
@@ -211,7 +214,7 @@ func GetProductsNonCoffeeByBranch(c *gin.Context) {
 		return
 	}
 
-	query := "SELECT p.id, p.name, p.price, p.pictureUrl, p.category, b.id, b.name, b.address, bp.productQuantity " +
+	query := "SELECT p.id, p.name, p.price, p.pictureUrl, p.category, p.subcategory, b.id, b.name, b.address, bp.productQuantity, p.desc " +
 		"FROM products p " +
 		"JOIN branchproduct bp ON p.id=bp.productId " +
 		"JOIN branches b ON bp.branchId=b.id " +
@@ -234,10 +237,12 @@ func GetProductsNonCoffeeByBranch(c *gin.Context) {
 			&product.Price,
 			&product.PictureUrl,
 			&product.Category,
+			&product.SubCategory,
 			&branch.ID,
 			&branch.Name,
 			&branch.Address,
 			&product.ProductQuantity,
+			&product.Desc,
 		); err != nil {
 			log.Println(err)
 			c.JSON(400, gin.H{"error": "products not found"})
@@ -274,7 +279,7 @@ func GetProductsDonutByBranch(c *gin.Context) {
 		return
 	}
 
-	query := "SELECT p.id, p.name, p.price, p.pictureUrl, p.category, b.id, b.name, b.address, bp.productQuantity " +
+	query := "SELECT p.id, p.name, p.price, p.pictureUrl, p.category, p.subcategory, b.id, b.name, b.address, bp.productQuantity, p.desc " +
 		"FROM products p " +
 		"JOIN branchproduct bp ON p.id=bp.productId " +
 		"JOIN branches b ON bp.branchId=b.id " +
@@ -289,7 +294,6 @@ func GetProductsDonutByBranch(c *gin.Context) {
 
 	var product ProductForMenu
 	var products []ProductForMenu
-	var productQuantity int
 	var branch Branch
 	for rows.Next() {
 		if err := rows.Scan(
@@ -298,16 +302,18 @@ func GetProductsDonutByBranch(c *gin.Context) {
 			&product.Price,
 			&product.PictureUrl,
 			&product.Category,
+			&product.SubCategory,
 			&branch.ID,
 			&branch.Name,
 			&branch.Address,
 			&product.ProductQuantity,
+			&product.Desc,
 		); err != nil {
 			log.Println(err)
 			c.JSON(400, gin.H{"error": "products not found"})
 			return
 		} else {
-			if productQuantity > 0 {
+			if product.ProductQuantity > 0 {
 				product.Status = "AVAILABLE"
 			} else {
 				product.Status = "UNAVAILABLE"
