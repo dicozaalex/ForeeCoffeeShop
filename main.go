@@ -40,7 +40,6 @@ func main() {
 
 	// LOGIN
 	router.POST("/login", controllers.Login)
-	router.POST("/logout", controllers.AuthMiddleware("CUSTOMER", "ADMIN", "INVESTOR"), controllers.Logout)
 	router.POST("/signup", controllers.Signup)
 
 	// PRODUCTS
@@ -49,7 +48,7 @@ func main() {
 	productsRoutes.GET("/branch", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetAllProductsByBranch)
 	// productsRoutes.GET("/name", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetProductByNameAndBranch)
 	productsRoutes.GET("/name", controllers.GetProductByNameAndBranch)
-	productsRoutes.GET("/coffee", controllers.GetProductsCoffeeByBranch)
+	productsRoutes.GET("/coffee", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetProductsCoffeeByBranch)
 	productsRoutes.GET("/noncoffee", controllers.GetProductsNonCoffeeByBranch)
 	productsRoutes.GET("/donut", controllers.GetProductsDonutByBranch)
 
