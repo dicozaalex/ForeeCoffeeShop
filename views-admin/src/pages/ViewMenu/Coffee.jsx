@@ -1,0 +1,84 @@
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
+import Navbar from '../../components/Navbar/Navbar';
+
+function Coffee() {
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
+    const [menuItems, setMenuItems] = useState([]);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        fetchMenuItems();
+    }, []);
+
+    const fetchMenuItems = async () => {
+        try {
+            const response = await fetch(`${backendUrl}/products/coffee?Branch=Griya Buah Batu`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch menu items');
+            }
+            const data = await response.json();
+            setMenuItems(data.data);
+        } catch (error) {
+            console.error('Error fetching menu items:', error);
+        }
+    };
+
+    const handleLatestButtonClick = () => {
+        navigate('/edit-menu');
+    }
+
+    const filterProductsBySubcategory = (subcategory) => {
+        return menuItems.products.filter(product => product.subcategory === subcategory);
+    };
+
+    return (
+        <>
+            <Navbar />
+            <div className="flex-col min-h-screen" style={{ backgroundColor: '#1C5739'}}>
+                <h2 className="text-white text-2xl bold-text mb-4 ml-4 my-4">Flavoured Coffee</h2>
+                <hr className="mx-4 my-4"></hr>
+                <div className="menu-row">
+                    {menuItems.products && menuItems.products.length > 0 &&
+                        filterProductsBySubcategory('FLAVOURED COFFEE').map((product, index) => (
+                            <div key={index} className="menu-item flex justify-between items-center mx-4 my-4">
+                                <div className="menu-item flex items-center">
+                                    <img src={product.picture_url} alt={product.name} width="70px"></img>
+                                    <div>
+                                        <h3 className="text-white text-xl ml-4">{product.name}</h3>
+                                        <h3 className="text-white text-l mb-4 ml-4">Rp{product.price}</h3>
+                                    </div>
+                                </div>
+                                <button className="ml-4" onClick={() => handleLatestButtonClick(product.id, product.stock)}>
+                                    <img src={`${process.env.PUBLIC_URL}/assets/pencil.png`} alt="Edit" width="20px"></img>
+                                </button>
+                            </div> 
+                        ))
+                    }
+                </div>
+                <h2 className="text-white text-2xl bold-text mb-4 ml-4 my-4">Latte</h2>
+                <hr className="mx-4 my-4"></hr>
+                <div className="menu-row">
+                    {menuItems.products && menuItems.products.length > 0 &&
+                        filterProductsBySubcategory('LATTE').map((product, index) => (
+                            <div key={index} className="menu-item flex justify-between items-center mx-4 my-4">
+                                <div className="menu-item flex items-center">
+                                    <img src={product.picture_url} alt={product.name} width="70px"></img>
+                                    <div>
+                                        <h3 className="text-white text-xl ml-4">{product.name}</h3>
+                                        <h3 className="text-white text-l mb-4 ml-4">Rp{product.price}</h3>
+                                    </div>
+                                </div>
+                                <button className="ml-4" onClick={() => handleLatestButtonClick(product.id, product.stock)}>                                    
+                                    <img src={`${process.env.PUBLIC_URL}/assets/pencil.png`} alt="Edit" width="20px"></img>
+                                </button>
+                            </div> 
+                        ))
+                    }
+                </div>
+            </div>
+        </>
+    )
+}
+
+export default Coffee;
