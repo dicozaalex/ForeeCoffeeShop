@@ -5,6 +5,7 @@ import Navbar from '../../components/Navbar/Navbar';
 function Donut() {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
     const [menuDonut, setMenuDonut] = useState([]);
+    const [cartItems, setCartItems] = useState([]);
     const [counters, setCounters] = useState([]);
     const navigate = useNavigate();
 
@@ -44,6 +45,8 @@ function Donut() {
                 ...prevCounters,
                 [productId]: prevCounters[productId] + 1
             }));
+            const selectedItem = menuDonut.products.find(product => product.id === productId);
+            setCartItems(prevCartItems => [...prevCartItems, selectedItem]);
         }
     };
 
@@ -52,6 +55,8 @@ function Donut() {
             ...prevCounters,
             [productId]: prevCounters[productId] - 1
         }));
+        const updatedCartItems = cartItems.filter(item => item.id !== productId);
+        setCartItems(updatedCartItems);
     };
 
     return (
@@ -90,12 +95,14 @@ function Donut() {
                     ))
                 }
                 </div>
-                <div style={{ position: 'fixed', bottom: '10px', left: '10px', right: '10px', padding: '12px', borderRadius: '20px', backgroundColor: '#368D61' }}>
-                    <button onClick={handleLatestButtonClick} style={{ display: 'flex', alignItems: 'center', width: '100%', backgroundColor: 'transparent', border: 'none' }}>
-                        <img src={`${process.env.PUBLIC_URL}/assets/menu/cart.png`} alt="Cart" width="50px" />
-                        <h3 className="text-white text-xl ml-4" style={{ fontSize: '25px' }}>1 items</h3>
-                    </button>
-                </div>
+                {cartItems.length > 0 && (
+                    <div style={{ position: 'fixed', bottom: '10px', left: '10px', right: '10px', padding: '12px', borderRadius: '20px', backgroundColor: '#368D61' }}>
+                            <button onClick={handleLatestButtonClick} style={{ display: 'flex', alignItems: 'center', width: '100%', backgroundColor: 'transparent', border: 'none' }}>
+                                <img src={`${process.env.PUBLIC_URL}/assets/menu/cart.png`} alt="Cart" width="50px" />
+                                    <h3 className="text-white text-xl ml-4" style={{ fontSize: '25px' }}>{cartItems.length} items</h3>
+                            </button>
+                    </div>
+                )}
             </div>
         </>
     )
