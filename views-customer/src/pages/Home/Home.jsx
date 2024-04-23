@@ -67,6 +67,7 @@ function Home() {
     return (
         <>
             <Navbar />
+            <SignOutComponent />
             <div className='h-screen' style={{ backgroundColor: '#1C5739', minHeight: '130vh' }}>
                 <h2 className="text-white text-2xl bold-text mb-4 ml-4 my-4">Flavoured Coffee</h2>
                 <hr className="mx-4 my-4"></hr>
