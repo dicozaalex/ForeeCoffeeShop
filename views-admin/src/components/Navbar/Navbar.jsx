@@ -11,7 +11,7 @@ function Navbar() {
   
   return (
     <>
-      <nav className="p-5 top-0 sticky bg-white">
+      <nav className="p-5 top-0 sticky bg-white z-10">
         <div className="flex items-center justify-between">
             <Link to="/branch" className={"items-center flex flex-col " + (url === "/branch" ? "active-navbar" : "")}>
               <img className="m-0" src={`${process.env.PUBLIC_URL}/assets/navbar/branch.png`} alt="Branch" width="40px" />

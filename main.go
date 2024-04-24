@@ -46,18 +46,15 @@ func main() {
 	productsRoutes := router.Group("/products")
 	productsRoutes.GET("", controllers.AuthMiddleware("ADMIN"), controllers.GetAllProductsAndTheirBranches)
 	productsRoutes.GET("/branch", controllers.GetAllProductsByBranch)
-	// productsRoutes.GET("/name", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetProductByNameAndBranch)
-	productsRoutes.GET("/name", controllers.GetProductByNameAndBranch)
-	productsRoutes.GET("/coffee", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetProductsCoffeeByBranch)
+	productsRoutes.GET("/name", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetProductByNameAndBranch)
+	// productsRoutes.GET("/coffee", controllers.AuthMiddleware("ADMIN", "CUSTOMER"), controllers.GetProductsCoffeeByBranch)
+	productsRoutes.GET("/coffee", controllers.GetProductsCoffeeByBranch)
 	productsRoutes.GET("/noncoffee", controllers.GetProductsNonCoffeeByBranch)
 	productsRoutes.GET("/donut", controllers.GetProductsDonutByBranch)
 
-	// productsRoutes.POST("", controllers.AuthMiddleware("ADMIN"), controllers.InsertProduct)
-	productsRoutes.POST("", controllers.InsertProduct)
-	// productsRoutes.PUT("/:id", controllers.AuthMiddleware("ADMIN"), controllers.UpdateProduct)
-	productsRoutes.PUT("/:id", controllers.UpdateProduct)
-	// productsRoutes.DELETE("/:id", controllers.AuthMiddleware("ADMIN"), controllers.DeleteProduct)
-	productsRoutes.DELETE("/:id", controllers.DeleteProduct)
+	productsRoutes.POST("", controllers.AuthMiddleware("ADMIN"), controllers.InsertProduct)
+	productsRoutes.PUT("/:id", controllers.AuthMiddleware("ADMIN"), controllers.UpdateProduct)
+	productsRoutes.DELETE("/:id", controllers.AuthMiddleware("ADMIN"), controllers.DeleteProduct)
 
 	// BRANCHES
 	branchesRoutes := router.Group("/branches")
@@ -73,10 +70,8 @@ func main() {
 
 	// Product Branch
 	productBranchRoutes := router.Group("/productBranch")
-	// productBranchRoutes.POST("/:branchName", controllers.AuthMiddleware("ADMIN"), controllers.InsertMenuBranch)
-	productBranchRoutes.POST("/:branchName", controllers.InsertMenuBranch)
-	// productBranchRoutes.PUT("/:branchName", controllers.AuthMiddleware("ADMIN"), controllers.UpdateMenuBranch)
-	productBranchRoutes.PUT("/:branchName", controllers.UpdateMenuBranch)
+	productBranchRoutes.POST("/:branchName", controllers.AuthMiddleware("ADMIN"), controllers.InsertMenuBranch)
+	productBranchRoutes.PUT("/:branchName", controllers.AuthMiddleware("ADMIN"), controllers.UpdateMenuBranch)
 	productBranchRoutes.DELETE("/:branchName", controllers.AuthMiddleware("ADMIN"), controllers.DeleteMenuBranch)
 
 	w := httptest.NewRecorder()
