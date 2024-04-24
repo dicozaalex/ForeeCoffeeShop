@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Navbar from '../../components/Navbar/Navbar';
+import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
+import { useLocation } from 'react-router-dom';
 
-function EditMenu() {
+function EditMenu({route}) {
+  const location = useLocation();
+  const { itemName } = location.state || {};
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  const authHeader = useAuthHeader();
   const [inputs, setInputs] = useState({
     productId: '',
     productName: '',
@@ -17,13 +23,14 @@ function EditMenu() {
   const [subCategories, setSubCategories] = useState([]);
 
   useEffect(() => {
-    //API = '${backendUrl}/products/name?Name=${productName}&Branch=${branchName}'
-    axios.get(`${backendUrl}/products/name?Name=Matcha&Branch=Dipatiukur, Bandung`)
-      // , {
-      //   headers: {
-      //     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-      //   },
-      // }
+    axios.get(`${backendUrl}/products/name?Name=${itemName}&Branch=Dipatiukur, Bandung`, 
+    {
+        credentials: 'include',
+        headers: {
+          'Authorization': authHeader,
+        },
+      }
+    )
       .then((response) => {
         const productData = response.data.data.products[0];
 
@@ -51,7 +58,7 @@ function EditMenu() {
       .catch((error) => {
         console.error('Error fetching product data:', error);
       });
-  }, [backendUrl]);
+  }, [backendUrl ,authHeader]);
 
 
   useEffect(() => {
@@ -169,11 +176,15 @@ function EditMenu() {
     formData.append('photo', inputs.photo);
 
     try {
-      const response = axios.put(`${backendUrl}/products/${inputs.productId}`, formData, {
+      const response = axios.put(`${backendUrl}/products/${inputs.productId}`, formData, 
+      {
+        credentials: 'include',
         headers: {
+          'Authorization': authHeader,
           'Content-Type': 'multipart/form-data'
         }
-      });
+      }
+    );
       console.log('Product updated:', response.data);
 
     } catch (error) {
@@ -187,8 +198,14 @@ function EditMenu() {
     formData.append('productName', inputs.productName);
     formData.append('stock', inputs.stock);
 
-    // API still not correct (hard-coded)
-    axios.put(`${backendUrl}/productBranch/Dipatiukur, Bandung`, formData)
+    axios.put(`${backendUrl}/productBranch/Dipatiukur, Bandung`, formData, 
+    {
+      credentials: 'include',
+      headers: {
+        'Authorization': authHeader,
+      }
+    }
+  )
       .then((response) => {
         console.log('Stock updated:', response.data);
       })
@@ -201,14 +218,14 @@ function EditMenu() {
   const handleDelete = () => {
     const confirmed = window.confirm('Are you sure you want to delete this product? Click OK to delete, or Cancel to go back.');
     if (confirmed) {
-      // API = `${backendUrl}/products/${productId}
-      axios.delete(`${backendUrl}/products/2013`
-        // , {
-        //   headers: {
-        //     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        //   },
-        // }
-      )
+      axios.delete(`${backendUrl}/products/2013`, 
+      {
+        credentials: 'include',
+        headers: {
+          'Authorization': authHeader,
+        },
+      }
+    )
         .then((response) => {
           console.log('Product deleted:', response.data);
         })
@@ -219,7 +236,10 @@ function EditMenu() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen" style={{ backgroundColor: '#1C5739', paddingTop: '4rem' }}>
+  <>
+    <Navbar />
+
+    <div className="flex flex-col items-center justify-center min-h-screen container" style={{ backgroundColor: '#1C5739', paddingTop: '4rem'}}>
       <form onSubmit={handleSubmit} className="w-6/12">
 
         <div className="relative w-40 h-40 mb-4 overflow-hidden flex items-center justify-center mx-auto">
@@ -230,19 +250,12 @@ function EditMenu() {
             accept="image/*"
             className="absolute inset-0 opacity-0 z-10 cursor-pointer"
             onChange={handleChange}
-            style={{ zIndex: 4 }}
           />
           <img
             src={inputs.photo ? URL.createObjectURL(inputs.photo) : inputs.picture_url}
             alt="Product"
             className="w-full h-full object-cover"
             style={{ zIndex: 1 }}
-          />
-          <img
-            src={`${process.env.PUBLIC_URL}/assets/pencil.png`}
-            alt="Pencil"
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-5 h-5"
-            style={{ zIndex: 3 }}
           />
         </div>
 
@@ -351,6 +364,7 @@ function EditMenu() {
         </div>
       </form>
     </div>
+  </>
   );
 }
 

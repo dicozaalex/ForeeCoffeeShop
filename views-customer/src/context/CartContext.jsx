@@ -82,6 +82,14 @@ const CartProvider = ({ children }) => {
     setCartItems([]);
   }
 
+  const getTotalPrice = () => {
+    let totalPrice = 0;
+    cartItems.forEach((item) => {
+      totalPrice += item.quantity * item.price;
+    });
+    return totalPrice;
+  }
+
   const value = {
     selectedBranch,
     deliveryMethod,
@@ -95,6 +103,7 @@ const CartProvider = ({ children }) => {
     hasItemInCart,
     getQuantityOfItem,
     getTotalPriceOfItem,
+    getTotalPrice
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
