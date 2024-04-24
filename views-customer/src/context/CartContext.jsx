@@ -68,6 +68,14 @@ const CartProvider = ({ children }) => {
     return item ? item.quantity * item.price : 0;
   }
 
+  const getTotalPrice = () => {
+    let totalPrice = 0;
+    cartItems.forEach((item) => {
+      totalPrice += item.quantity * item.price;
+    });
+    return totalPrice;
+  }
+
   const value = {
     selectedBranch,
     cartItems,
@@ -79,6 +87,7 @@ const CartProvider = ({ children }) => {
     hasItemInCart,
     getQuantityOfItem,
     getTotalPriceOfItem,
+    getTotalPrice
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
