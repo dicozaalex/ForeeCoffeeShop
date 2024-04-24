@@ -31,8 +31,8 @@ function Donut() {
         }
     };
 
-    const handleLatestButtonClick = () => {
-        navigate('/edit-menu');
+    const handleLatestButtonClick = (productName) => {
+        navigate('/edit-menu', { state: { itemName: productName } });
     }
 
     const handleInsertButtonClick = () => {
@@ -61,7 +61,7 @@ function Donut() {
                                         <h3 className="text-white text-sm mb-4 ml-4">Current stock: {product.stock}</h3>
                                     </div>
                                 </div>
-                                <button className="ml-4" onClick={() => handleLatestButtonClick(product.id, product.stock)}>
+                                <button className="ml-4" onClick={() => handleLatestButtonClick(product.name)}>
                                     <img src={`${process.env.PUBLIC_URL}/assets/viewmenu/pencil.png`} alt="Edit Menu" width="30px"></img>
                                 </button>
                             </div> 

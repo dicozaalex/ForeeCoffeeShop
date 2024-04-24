@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar/Navbar';
-// import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
+import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 
 function Coffee() {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
-    // const authHeader = useAuthHeader();
+    const authHeader = useAuthHeader();
     const [menuItems, setMenuItems] = useState([]);
     const navigate = useNavigate();
 
@@ -16,12 +16,12 @@ function Coffee() {
     const fetchMenuItems = async () => {
         try {
             const response = await fetch(`${backendUrl}/products/coffee?Branch=Griya Buah Batu`
-            // , {
-            //     credentials: 'include',
-            //     headers: {
-            //         'Authorization': authHeader,
-            //     },
-            // }
+            , {
+                credentials: 'include',
+                headers: {
+                    'Authorization': authHeader,
+                },
+            }
         );
             if (!response.ok) {
                 throw new Error('Failed to fetch menu items');
@@ -85,7 +85,7 @@ function Coffee() {
                                         <h3 className="text-white text-sm mb-4 ml-4">Current stock: {product.stock}</h3>
                                     </div>
                                 </div>
-                                <button className="ml-4" onClick={() => handleLatestButtonClick(product.id, product.stock)}>                                    
+                                <button className="ml-4" onClick={() => handleLatestButtonClick(product.name)}>                                    
                                     <img src={`${process.env.PUBLIC_URL}/assets/viewmenu/pencil.png`} alt="Edit Menu" width="30px"></img>
                                 </button>
                             </div> 
