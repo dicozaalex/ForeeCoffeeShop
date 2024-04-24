@@ -13,9 +13,11 @@ Backend for Forree Coffee Shop using Go with Gin Framework.
 |/orders/status|PUT|Admins can edit order statuses.|
 |/products|GET, POST, PUT, DELETE|Admin and customer can search menu, Admin can insert, update, or delete menu items|
 |/products/name|GET|Admins and customers can search menu items by name|
+|/products/coffee|GET|Admins and customers can search coffee|
+|/products/noncoffee|GET|Admins and customers can search non-coffee|
+|/products/donut|GET|Admins and customers can search donut|
 |/branches|GET, POST, PUT, DELETE|Admins and customers can view branches, Admin can insert, update, or delete branches|
 |/productBranch|POST, PUT, DELETE|Admins can manage product stock by branch.|
-
 
 # Security Concern
 This backend is built with authentication and authorization. If a user is not logged in, then the endpoint will return `{"error":"User not logged in!"}`. 

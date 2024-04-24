@@ -21,19 +21,15 @@ This project implements an admin menu using React for front-end development and 
     ```
     go run main.go
     ```
-4. Initialize a new Node.js project (if needed) by running:
-    ```
-    npm init -y
-    ```
-5. Install dependencies required for the front end using:
+4. Install dependencies required for the front end using:
     ```
     npm install
     ```
-6. Go to views-admin
+5. Go to views-customer
     ```
-    cd views-admin
+    cd views-customer
     ```
-7. Run the Front End application
+6. Run the Front End application
     ```
     npm start
     ```
