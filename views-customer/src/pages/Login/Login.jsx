@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 
@@ -43,12 +42,15 @@ const Login = () => {
           auth: {
             token: res.data.token,
           },
-          userState: { name: res.data.username },
+          userState: { 
+            name: res.data.username,
+            id: res.data.id,
+          },
         });
         setMessage(res.data.message);
         setShow(true);
         setTimeout(() => {
-          navigate('/');
+          navigate('/branch-select');
         }, 1500);
       } else {
         const errorData = await response.json();
