@@ -8,7 +8,7 @@ import useSignOut from 'react-auth-kit/hooks/useSignOut';
 const BranchSelect = () => {
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
   const authHeader = useAuthHeader();
-  const { selectDeliveryMethod, selectBranch } = useContext(CartContext);
+  const { selectDeliveryMethod, selectBranch, selectedBranch, deliveryMethod } = useContext(CartContext);
   const navigate = useNavigate();
   const [branch, setBranch] = useState([]);
   const signOut = useSignOut();
@@ -54,6 +54,7 @@ const BranchSelect = () => {
                 className="p-1 w-full border-b-2 border-white bg-brand"
                 onChange={handleBranchChange}
                 style={{ backgroundColor: '#1C5739', color: 'white' }}
+                value={selectedBranch}
               >
                 {branch.map((option) => (
                   <option key={option.id} value={option.name}>
@@ -68,6 +69,7 @@ const BranchSelect = () => {
               className="p-1 border-b-2 border-white bg-brand"
               onChange={handleDeliveryMethodChange}
               style={{ backgroundColor: '#1C5739', color: 'white' }}
+              value={deliveryMethod}
             >
               <option value="PICK UP">
                 PICK UP

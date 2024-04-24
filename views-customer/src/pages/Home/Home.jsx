@@ -46,6 +46,8 @@ function Home() {
         <>
             <Navbar />
             <div className='h-screen' style={{ backgroundColor: '#1C5739', minHeight: '150vh' }}>
+                <button className="text-white text-2xl bold-text btn ml-4 mt-4" onClick={() => navigate('/branch-select')}>Back to Branch Selection</button>
+                <hr className="mx-4 my-4"></hr>
                 <h2 className="text-white text-2xl bold-text mb-4 ml-4 my-4">Flavoured Coffee</h2>
                 <hr className="mx-4 my-4"></hr>
                 <div className="menu-row">
