@@ -1,9 +1,11 @@
 import React from 'react';
 import styles from './ViewOrder.module.css';
+import NavbarViewOrder from '../../components/Navbar/NavbarViewOrder';
 
 function ViewOrderDelivery() {
     return (
         <>
+        <NavbarViewOrder />
             <div className={styles.fullScreen}>
                 <div className={styles.information}>
                     <div className={styles.infoItem}>

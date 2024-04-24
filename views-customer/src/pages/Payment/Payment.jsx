@@ -1,13 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Payment.module.css';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import { CartContext } from '../../context/CartContext';
+import { useContext } from 'react';
 
 function Payment() {
+    const { cartItems, selectedBranch, getTotalPriceOfItem, getTotalPrice, addItemToCart, addItemQuantity, reduceItemQuantity, hasItemInCart, getQuantityOfItem } = useContext(CartContext);
+    const auth = useAuthUser();
   return (
     <div className={styles.fullScreen}>
         <div className="container mx-auto mt-20 text-center">
             <h1 className="text-white text-4xl font-bold mb-2">Linked Methods</h1>
-            <h2 className="text-white text-2xl mb-4">TOTAL: 30,000</h2>
+            <h2 className="text-white text-2xl mb-4">TOTAL: Rp {getTotalPrice()}</h2>
 
             <div className="w-3/4 mx-auto grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
                 {/* <!-- Button 1 --> */}

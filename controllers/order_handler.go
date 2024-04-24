@@ -14,10 +14,13 @@ func InsertOrder(c *gin.Context) {
 	defer db.Close()
 
 	activeUserId := GetUserId(c)
-
+	println(activeUserId)
 	branchName := c.PostForm("branch_name")
+	println(branchName)
 	productNames := c.PostFormArray("product_name[]")
+	println(productNames)
 	quantity := c.PostFormArray("quantity[]")
+	println(quantity)
 
 	var branchId int
 	err := db.QueryRow("SELECT id FROM branches WHERE name = ?", branchName).Scan(&branchId)

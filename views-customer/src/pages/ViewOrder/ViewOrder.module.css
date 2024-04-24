@@ -72,6 +72,7 @@
     border: 2px solid white;
     border-radius: 5px;
     cursor: pointer;
+    text-align: center;
 }
 
 .statusBox.active {

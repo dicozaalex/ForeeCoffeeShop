@@ -35,7 +35,7 @@ function Coffee() {
     };
 
     const handleLatestButtonClick = () => {
-        navigate('/order');
+        navigate('/order-pickup');
     }
 
     const filterProductsBySubcategory = (subcategory) => {
