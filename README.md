@@ -30,9 +30,18 @@ A simple, quick, and lightweight HTTP web framework for Go that makes building o
 A creational design pattern that permits you to give a global access point to a class's single instance while guaranteeing that class has exactly one
 
 ## State
-A behavioral software design pattern that allows an object to alter its behavior when its internal state changes.
+A behavioral design pattern that allows an object to alter its behavior when its internal state changes.
+
+## Adapter
+A structural design pattern that allows objects with incompatible interfaces to collaborate.
 
 # Caching
 Redis is used to store the products images with the benefits of:
 * Faster Retrieval
 * Reduced Server Load
+
+# Email Features in Go
+* GoMail: used for sending emails
+* GoRoutine: used for working with Redis
+* GoCRON: used for scheduling tasks or jobs
+* GoRedis: used for enabling concurrent execution of functions or tasks
