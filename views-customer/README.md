@@ -29,9 +29,9 @@ This project implements an admin menu using React for front-end development and 
     ```
     npm install
     ```
-6. Go to views-admin
+6. Go to views-customer
     ```
-    cd views-admin
+    cd views-customer
     ```
 7. Run the Front End application
     ```
