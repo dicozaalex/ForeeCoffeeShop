@@ -82,6 +82,6 @@ func Login(c *gin.Context) {
 	var response Response
 	response.Status = http.StatusOK
 	response.Message = http.StatusText(http.StatusOK)
-	response.Data = gin.H{"message": "Login successful", "token": token, "username": username}
+	response.Data = gin.H{"message": "Login successful", "token": token, "username": username, "id": id}
 	c.JSON(http.StatusOK, response)
 }
