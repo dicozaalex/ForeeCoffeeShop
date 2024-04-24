@@ -138,3 +138,8 @@
   max-width: 70%; 
   word-wrap: break-word; 
 }
+
+.infoText input{
+  border: 0;
+  background-color: #1c5739;
+}

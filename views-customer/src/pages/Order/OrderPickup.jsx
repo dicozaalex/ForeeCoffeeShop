@@ -38,7 +38,6 @@ function OrderPickup() {
                             <span>{auth.name}</span>
                         </div>
                     </div>
-                    <hr style={{ border: '0', borderTop: '2px solid white', marginTop: '-10px', width: 'calc(100% - 60px)', marginLeft: '60px' }} />
                     <br />
                 </div>
                 <div className={styles.order}>

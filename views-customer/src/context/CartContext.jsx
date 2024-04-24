@@ -8,14 +8,21 @@ const CartContext = createContext({
   addItemQuantity: (itemId) => { },
   selectedBranch: null,
   deliveryMethod: null,
+  phoneNumber: null,
+  address: null,
   setSelectedBranch: (branch) => { },
   setDeliveryMethod: (deliveryMethod) => { },
+  setPhoneNumber: (phoneNumber) => { },
+  setAddress: (address) => { },
+
 });
 
 const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState('Trans Studio Mall Bandung');
   const [deliveryMethod, setDeliveryMethod] = useState('PICK UP');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [address, setAddress] = useState('');
 
   const addItemToCart = (item) => {
     setCartItems((prevItems) => [...prevItems, { ...item, quantity: 1 }]);
@@ -59,7 +66,6 @@ const CartProvider = ({ children }) => {
       resetCart();
     }
   };
-
   const selectDeliveryMethod = (method) => {
     setDeliveryMethod(method);
   };
@@ -103,7 +109,11 @@ const CartProvider = ({ children }) => {
     hasItemInCart,
     getQuantityOfItem,
     getTotalPriceOfItem,
-    getTotalPrice
+    getTotalPrice,
+    setAddress,
+    setPhoneNumber,
+    phoneNumber,
+    address
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

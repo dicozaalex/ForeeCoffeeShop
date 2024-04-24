@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Order.module.css';
 import NavbarCheckout from '../../components/Navbar/NavbarCheckout';
@@ -8,106 +8,117 @@ import { useContext } from 'react';
 
 
 function OrderDelivery() {
-    const { cartItems, selectedBranch, getTotalPriceOfItem, getTotalPrice, addItemToCart, addItemQuantity, reduceItemQuantity, hasItemInCart, getQuantityOfItem } = useContext(CartContext);
+    const { cartItems, selectedBranch,address, phoneNumber, setAddress, setPhoneNumber, getTotalPriceOfItem, getTotalPrice, addItemToCart, addItemQuantity, reduceItemQuantity, hasItemInCart, getQuantityOfItem } = useContext(CartContext);
     const auth = useAuthUser();
+
+    // Function to update address
+    const updateAddress = (newAddress) => {
+        setAddress(newAddress);
+    };
+    
+    // Function to update phone number
+    const updatePhoneNumber = (newPhoneNumber) => {
+        setPhoneNumber(newPhoneNumber);
+    };
     return (
         <>
-        <NavbarCheckout />
+            <NavbarCheckout />
             <div className={styles.fullScreen}>
-                <div className={styles.information}>
-                    <div className={styles.infoItem}>
-                        <img className={`${styles.img} ${styles.circledImage}`} src={`${process.env.PUBLIC_URL}/assets/Order/delivery-motor.png`} alt="delivery" />
-                        <div className={styles.infoText}>
-                            <span>Delivery</span>
-                            <span>The delivery-man will bring the order to you</span>
-                        </div>
-                    </div>
-                    <br />
-                    <h1 className={styles.h1}>Delivery Information</h1>
-                    <hr style={{ border: '0', borderTop: '2px solid white', marginTop: '5px' }} />
-                    <div className={styles.infoItem} style={{ marginTop: '20px' }}>
-                        <img className={`${styles.img} ${styles.circledImage}`} src={`${process.env.PUBLIC_URL}/assets/Order/location.png`} alt="location" />
-                        <div className={styles.infoText}>
-                            <span>Location</span>
-                            <span>Jl. Dipatiukur No.8, Bandung</span>
-                        </div>
-                    </div>
-                    <hr style={{ border: '0', borderTop: '2px solid white', marginTop: '-10px', width: 'calc(100% - 60px)', marginLeft: '65px' }} />
-                    <div className={styles.infoItem} style={{ marginTop: '20px' }}>
-                        <img className={styles.img} src={`${process.env.PUBLIC_URL}/assets/ViewOrder/user.png`} alt="user" />
-                        <div className={styles.infoText}>
-                            <span>Name</span>
-                            <span>{auth.name}</span>
-                        </div>
-                    </div>
-                    <hr style={{ border: '0', borderTop: '2px solid white', marginTop: '-10px', width: 'calc(100% - 60px)', marginLeft: '60px' }} />
-                    <div className={styles.infoItem} style={{ marginTop: '20px' }}>
-                        <img className={styles.img} src={`${process.env.PUBLIC_URL}/assets/Order/phone.png`} alt="phone" />
-                        <div className={styles.infoText}>
-                            <span>Phone Number</span>
-                            <span>0882736495876</span>
-                        </div>
-                    </div>
-                    <hr style={{ border: '0', borderTop: '2px solid white', marginTop: '-10px', width: 'calc(100% - 60px)', marginLeft: '60px' }} />
-                    <br />
-                </div>
-                <div className={styles.order}>
-                    <div className={styles.orderHeader}>
-                        <h1 className={styles.h1}>Order Details</h1>
-                        <Link to="/" className={styles['addButton']}>
-                            <span style={{ color: '#1C5739', margin: 'auto' }}>Add</span>
-                        </Link>
-                    </div>
-                    <hr style={{ border: '0', borderTop: '2px solid white', marginTop: '5px' }} />
-                    {cartItems.map((product, index) => (
-                        <div key={index} className={styles.orderList}>
-                            <div className={styles.orderName}>
-                                <span>{product.name}</span>
-                                <img className={styles.img} src={product.picture_url} alt="menu" />
+                {/* <form onSubmit={handleSubmit}> */}
+                    <div className={styles.information}>
+                        <div className={styles.infoItem}>
+                            <img className={`${styles.img} ${styles.circledImage}`} src={`${process.env.PUBLIC_URL}/assets/Order/delivery-motor.png`} alt="delivery" />
+                            <div className={styles.infoText}>
+                                <span>Delivery</span>
+                                <span>The delivery-man will bring the order to you</span>
                             </div>
-                            <div className={styles.orderDetails}>
-                                <div>
-                                    <span>Rp {getTotalPriceOfItem(product.id)}</span>
+                        </div>
+                        <br />
+                        <h1 className={styles.h1}>Delivery Information</h1>
+                        <hr style={{ border: '0', borderTop: '2px solid white', marginTop: '5px' }} />
+                        <div className={styles.infoItem} style={{ marginTop: '20px' }}>
+                            <img className={`${styles.img} ${styles.circledImage}`} src={`${process.env.PUBLIC_URL}/assets/Order/location.png`} alt="location" />
+                            <div className={styles.infoText}>
+                                <span>Location</span>
+                                <input type="text" value={address} onChange={(e) => updateAddress(e.target.value)} placeholder="Enter your location" />
+                            </div>
+                        </div>
+                        <hr style={{ border: '0', borderTop: '2px solid white', marginTop: '-10px', width: 'calc(100% - 60px)', marginLeft: '65px' }} />
+                        <div className={styles.infoItem} style={{ marginTop: '20px' }}>
+                            <img className={styles.img} src={`${process.env.PUBLIC_URL}/assets/ViewOrder/user.png`} alt="user" />
+                            <div className={styles.infoText}>
+                                <span>Name</span>
+                                <span>{auth.name}</span>
+                            </div>
+                        </div>
+                        <div className={styles.infoItem} style={{ marginTop: '20px' }}>
+                            <img className={styles.img} src={`${process.env.PUBLIC_URL}/assets/Order/phone.png`} alt="phone" />
+                            <div className={styles.infoText}>
+                                <span>Phone Number</span>
+                                <input type="tel" value={phoneNumber} onChange={(e) => updatePhoneNumber(e.target.value)} placeholder="Enter your phone number" />
+                            </div>
+                        </div>
+                        <hr style={{ border: '0', borderTop: '2px solid white', marginTop: '-10px', width: 'calc(100% - 60px)', marginLeft: '60px' }} />
+                        <br />
+                    </div>
+                    <div className={styles.order}>
+                        <div className={styles.orderHeader}>
+                            <h1 className={styles.h1}>Order Details</h1>
+                            <Link to="/" className={styles['addButton']}>
+                                <span style={{ color: '#1C5739', margin: 'auto' }}>Add</span>
+                            </Link>
+                        </div>
+                        <hr style={{ border: '0', borderTop: '2px solid white', marginTop: '5px' }} />
+                        {cartItems.map((product, index) => (
+                            <div key={index} className={styles.orderList}>
+                                <div className={styles.orderName}>
+                                    <span>{product.name}</span>
+                                    <img className={styles.img} src={product.picture_url} alt="menu" />
                                 </div>
-                                <div className={styles.orderItems}>
-                                    {!hasItemInCart(product.id) ? (
-                                        <button className="ml-4" onClick={() => addItemToCart(product)}>
-                                            <img src={`${process.env.PUBLIC_URL}/assets/menu/add.png`} alt="Add" width="20px"></img>
-                                        </button>
-                                    ) : (
-                                        <div className="flex items-center">
-                                            <button className="mr-2" onClick={() => reduceItemQuantity(product.id)}>
-                                                <img src={`${process.env.PUBLIC_URL}/assets/menu/reduce.png`} alt="Reduce" width="20px"></img>
-                                            </button>
-                                            <div className="text-white">{getQuantityOfItem(product.id)}</div>
-                                            <button className="ml-2" onClick={() => addItemQuantity(product.id)}>
+                                <div className={styles.orderDetails}>
+                                    <div>
+                                        <span>Rp {getTotalPriceOfItem(product.id)}</span>
+                                    </div>
+                                    <div className={styles.orderItems}>
+                                        {!hasItemInCart(product.id) ? (
+                                            <button className="ml-4" onClick={() => addItemToCart(product)}>
                                                 <img src={`${process.env.PUBLIC_URL}/assets/menu/add.png`} alt="Add" width="20px"></img>
                                             </button>
-                                        </div>
-                                    )}
+                                        ) : (
+                                            <div className="flex items-center">
+                                                <button className="mr-2" onClick={() => reduceItemQuantity(product.id)}>
+                                                    <img src={`${process.env.PUBLIC_URL}/assets/menu/reduce.png`} alt="Reduce" width="20px"></img>
+                                                </button>
+                                                <div className="text-white">{getQuantityOfItem(product.id)}</div>
+                                                <button className="ml-2" onClick={() => addItemQuantity(product.id)}>
+                                                    <img src={`${process.env.PUBLIC_URL}/assets/menu/add.png`} alt="Add" width="20px"></img>
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                    <br />
-                    <h1 className={styles.h1}>Total Payment</h1>
-                    <hr style={{ border: '0', borderTop: '2px solid white', marginTop: '5px' }} />
-                    <div className={styles.orderTotal}>
-                        {cartItems.map((product, index) => (
-                            <div key={index} className={styles.orderTotalDetails}>
-                                <span className={styles.productName}>{product.name} ({product.quantity})</span>
-                                <span>Rp {getTotalPriceOfItem(product.id)}</span>
-                            </div>
                         ))}
-                        <div className={styles.orderTotalPrice}>
-                            <span>Total Price</span>
-                            <span>Rp {getTotalPrice()}</span>
+                        <br />
+                        <h1 className={styles.h1}>Total Payment</h1>
+                        <hr style={{ border: '0', borderTop: '2px solid white', marginTop: '5px' }} />
+                        <div className={styles.orderTotal}>
+                            {cartItems.map((product, index) => (
+                                <div key={index} className={styles.orderTotalDetails}>
+                                    <span className={styles.productName}>{product.name} ({product.quantity})</span>
+                                    <span>Rp {getTotalPriceOfItem(product.id)}</span>
+                                </div>
+                            ))}
+                            <div className={styles.orderTotalPrice}>
+                                <span>Total Price</span>
+                                <span>Rp {getTotalPrice()}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <Link to="/payment" className={styles['orderButton']}>
-                    <span style={{ color: '#1C5739', margin: 'auto' }}>Order</span>
-                </Link>
+                    <Link to="/payment" className={styles['orderButton']}>
+                        <button type="submit" style={{ color: '#1C5739', margin: 'auto' }}>Order</button>
+                    </Link>
+                {/* </form> */}
             </div>
         </>
     );
