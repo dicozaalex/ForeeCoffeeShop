@@ -6,7 +6,7 @@ import { CartContext } from '../../context/CartContext';
 import { useContext } from 'react';
 
 function Home() {
-    const { cartItems, addItemToCart, addItemQuantity, reduceItemQuantity, hasItemInCart, getQuantityOfItem } = useContext(CartContext);
+    const { cartItems, addItemToCart, addItemQuantity, reduceItemQuantity, hasItemInCart, getQuantityOfItem, selectedBranch, deliveryMethod } = useContext(CartContext);
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
     const authHeader = useAuthHeader();
     const [menuItems, setMenuItems] = useState([]);
@@ -18,12 +18,14 @@ function Home() {
 
     const fetchMenuItems = async () => {
         try {
-            const response = await fetch(`${backendUrl}/products/branch?Branch=Griya Buah Batu`, {
+            const response = await fetch(`${backendUrl}/products/branch?Branch=${selectedBranch}`, 
+            {
                 credentials: 'include',
                 headers: {
                     'Authorization': authHeader,
                 },
-            });
+            }
+        );
             if (!response.ok) {
                 throw new Error('Failed to fetch menu items');
             }
@@ -35,7 +37,11 @@ function Home() {
     };
 
     const handleLatestButtonClick = () => {
-        navigate('/order-delivery');
+        if (deliveryMethod === 'PICK UP') {
+            navigate('/order-pickup');
+        } else if (deliveryMethod === 'DELIVERY') {
+            navigate('/order-delivery');
+        }
     }
 
     const filterProductsBySubcategory = (subcategory) => {

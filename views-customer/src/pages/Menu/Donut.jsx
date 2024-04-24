@@ -6,7 +6,7 @@ import { CartContext } from '../../context/CartContext';
 import { useContext } from 'react';
 
 function Donut() {
-    const { cartItems, addItemToCart, addItemQuantity, reduceItemQuantity, hasItemInCart, getQuantityOfItem } = useContext(CartContext);
+    const { cartItems, addItemToCart, addItemQuantity, reduceItemQuantity, hasItemInCart, getQuantityOfItem, selectedBranch, deliveryMethod } = useContext(CartContext);
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
     const authHeader = useAuthHeader();
     const [menuDonut, setMenuDonut] = useState([]);
@@ -18,12 +18,14 @@ function Donut() {
 
     const fetchMenuDonut = async () => {
         try {
-            const response = await fetch(`${backendUrl}/products/donut?Branch=Griya Buah Batu`, {
+            const response = await fetch(`${backendUrl}/products/donut?Branch=${selectedBranch}`,
+            {
                 credentials: 'include',
                 headers: {
                     'Authorization': authHeader,
                 },
-            });
+            }
+        );
             if (!response.ok) {
                 throw new Error('Failed to fetch menu items');
             }
@@ -35,7 +37,11 @@ function Donut() {
     };
 
     const handleLatestButtonClick = () => {
-        navigate('/order');
+        if (deliveryMethod === 'PICK UP') {
+            navigate('/order-pickup');
+        } else if (deliveryMethod === 'DELIVERY') {
+            navigate('/order-delivery');
+        }
     }
 
     return (
