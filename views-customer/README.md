@@ -1,4 +1,4 @@
-# Views Admin
+# Views Customer
 This project implements an admin menu using React for front-end development and Tailwind CSS for styling.
 
 # Pages
