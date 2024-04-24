@@ -15,24 +15,27 @@ function Coffee() {
 
     const fetchMenuItems = async () => {
         try {
-            const response = await fetch(`${backendUrl}/products/coffee?Branch=Griya Buah Batu`, {
+            const response = await fetch(`${backendUrl}/products/coffee?Branch=Griya Buah Batu`
+            , {
                 credentials: 'include',
                 headers: {
                     'Authorization': authHeader,
                 },
-            });
+            }
+        );
             if (!response.ok) {
                 throw new Error('Failed to fetch menu items');
             }
             const data = await response.json();
+            console.log("dataaa:", data.data)
             setMenuItems(data.data);
         } catch (error) {
             console.error('Error fetching menu items:', error);
         }
     };
 
-    const handleLatestButtonClick = () => {
-        navigate('/edit-menu');
+    const handleLatestButtonClick = (productName) => {
+        navigate('/edit-menu', { state: { itemName: productName } });
     }
 
     const handleInsertButtonClick = () => {
@@ -61,7 +64,7 @@ function Coffee() {
                                         <h3 className="text-white text-sm mb-4 ml-4">Current stock: {product.stock}</h3>
                                     </div>
                                 </div>
-                                <button className="ml-4" onClick={() => handleLatestButtonClick(product.id, product.stock)}>
+                                <button className="ml-4" onClick={() => handleLatestButtonClick(product.name)}>
                                     <img src={`${process.env.PUBLIC_URL}/assets/viewmenu/pencil.png`} alt="Edit Menu" width="30px"></img>
                                 </button>
                             </div> 
@@ -82,7 +85,7 @@ function Coffee() {
                                         <h3 className="text-white text-sm mb-4 ml-4">Current stock: {product.stock}</h3>
                                     </div>
                                 </div>
-                                <button className="ml-4" onClick={() => handleLatestButtonClick(product.id, product.stock)}>                                    
+                                <button className="ml-4" onClick={() => handleLatestButtonClick(product.name)}>                                    
                                     <img src={`${process.env.PUBLIC_URL}/assets/viewmenu/pencil.png`} alt="Edit Menu" width="30px"></img>
                                 </button>
                             </div> 

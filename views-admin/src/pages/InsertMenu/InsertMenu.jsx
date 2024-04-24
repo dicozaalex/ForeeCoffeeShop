@@ -1,8 +1,11 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import Navbar from '../../components/Navbar/Navbar';
+import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 
 function InsertMenu() {
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  const authHeader = useAuthHeader();
   const [inputs, setInputs] = useState({
     productName: '',
     category: '',
@@ -100,9 +103,11 @@ function InsertMenu() {
 
     try {
       const productResponse = await axios.post(`${backendUrl}/products`, productFormData, {
+        credentials: 'include',
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          'Authorization': authHeader,
+          'Content-Type': 'multipart/form-data',
+        },
       });
       console.log('Product inserted:', productResponse.data);
 
@@ -121,7 +126,12 @@ function InsertMenu() {
     StockFormData.append('stock', inputs.stock);
   
     try {
-      const stockResponse = await axios.post(`${backendUrl}/productBranch/Dipatiukur, Bandung`, StockFormData);
+      const stockResponse = await axios.post(`${backendUrl}/productBranch/Dipatiukur, Bandung`, StockFormData, {
+        credentials: 'include',
+        headers: {
+          'Authorization': authHeader,
+        }
+      });
       console.log('Stock inserted:', stockResponse.data);
     } catch (error) {
       console.error('Error inserting stock:', error);
@@ -155,6 +165,9 @@ function InsertMenu() {
   };
 
   return (
+  <>
+    <Navbar />
+
     <div className="flex flex-col items-center justify-center h-screen" style={{ backgroundColor: '#1C5739' }}>
       <form onSubmit={handleSubmit} className="w-6/12">
 
@@ -286,6 +299,7 @@ function InsertMenu() {
 
       </form>
     </div>
+  </>
   );
 }
 
