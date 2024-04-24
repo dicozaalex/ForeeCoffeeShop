@@ -13,8 +13,9 @@ function Navbar() {
     <>
       <nav className="p-5 top-0 sticky bg-white">
         <div className="flex items-center justify-between">
-            <Link to="/branch">
-              <img className="m-0" src={`${process.env.PUBLIC_URL}/assets/branch.png`} alt="Branch" width="40px" />
+            <Link to="/branch" className={"items-center flex flex-col " + (url === "/branch" ? "active-navbar" : "")}>
+              <img className="m-0" src={`${process.env.PUBLIC_URL}/assets/navbar/branch.png`} alt="Branch" width="40px" />
+              <span className="text-black font-bold text-md">BRANCH</span>
             </Link>
             <Link to="/coffee" className={"items-center flex flex-col " + (url === "/coffee" ? "active-navbar" : "")}>
               <img className="m-0" src={`${process.env.PUBLIC_URL}/assets/Navbar/coffee-beans.png`} alt="Coffee"  width="40px"/>

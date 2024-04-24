@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
-import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated'
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import useSignIn from 'react-auth-kit/hooks/useSignIn';
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 
-function Register() {
+const Login = () => {
   const isAuthenticated = useIsAuthenticated()
   const navigate = useNavigate();
+  const signIn = useSignIn();
   const [inputs, setInputs] = useState({});
   const [message, setMessage] = useState('');
   const [show, setShow] = useState(false);
@@ -25,7 +28,7 @@ function Register() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch(`${backendUrl}/signup`, {
+      const response = await fetch(`${backendUrl}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -35,10 +38,17 @@ function Register() {
       });
 
       if (response.ok) {
-        setMessage('Registration successful!');
+        const res = await response.json();
+        signIn({
+          auth: {
+            token: res.data.token,
+          },
+          userState: { name: res.data.username },
+        });
+        setMessage(res.data.message);
         setShow(true);
         setTimeout(() => {
-          navigate('/login');
+          navigate('/');
         }, 1500);
       } else {
         const errorData = await response.json();
@@ -66,21 +76,6 @@ function Register() {
         </div>}
         <img className='mb-5' src={`${process.env.PUBLIC_URL}/assets/logo.png`} alt="Foree Logo" width="300px" />
         <form onSubmit={handleSubmit} className="text-white w-6/12">
-          <div className="mb-3">
-            <label className="text-xl">
-              Username
-            </label>
-            <div className="mt-2">
-              <input
-                name="username"
-                type="text"
-                className="block p-2 w-full rounded border-0 shadow-sm text-brand placeholder:text-brand placeholder:text-opacity-60"
-                placeholder="Enter your username"
-                value={inputs.username || ''}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
           <div className="mb-3">
             <label className="text-xl">
               Email
@@ -112,8 +107,8 @@ function Register() {
             </div>
           </div>
           <div className="items-center flex flex-col justify-center">
-            <button type="submit" className="rounded bg-brand w-8/12 p-2 mt-10 mb-2 text-xl">Register</button>
-            <span className="text-xs">Already have an account? <Link className="underline" to="/login">Login here</Link></span>
+            <button type="submit" className="rounded bg-brand w-8/12 p-2 mt-10 mb-2 text-xl">Login</button>
+            <span className="text-xs">Don't have an account? <Link className="underline" to="/register">Register here</Link></span>
           </div>
         </form>
       </div>
@@ -121,4 +116,4 @@ function Register() {
   )
 }
 
-export default Register
+export default Login
