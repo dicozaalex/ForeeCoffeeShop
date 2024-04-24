@@ -16,6 +16,7 @@ import AuthProvider from 'react-auth-kit';
 import store from './store.jsx';
 import Login from "./pages/Login/Login.jsx";
 import AuthOutlet from '@auth-kit/react-router/AuthOutlet';
+import BranchSelect from "./pages/BranchSelect/BranchSelect.jsx";
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route element={<AuthOutlet fallbackPath='/login' />}>
               <Route path="/" element={<Home />} />
+              <Route path="/branch-select" element={<BranchSelect />} />
               <Route path="/coffee" element={<Coffee />} />
               <Route path="/non-coffee" element={<NonCoffee />} />
               <Route path="/donut" element={<Donut />} />

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar/Navbar';
-import SignOutComponent from '../../components/Logout/Logout';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import { CartContext } from '../../context/CartContext';
 import { useContext } from 'react';
@@ -46,7 +45,6 @@ function Home() {
     return (
         <>
             <Navbar />
-            <SignOutComponent />
             <div className='h-screen' style={{ backgroundColor: '#1C5739', minHeight: '150vh' }}>
                 <h2 className="text-white text-2xl bold-text mb-4 ml-4 my-4">Flavoured Coffee</h2>
                 <hr className="mx-4 my-4"></hr>

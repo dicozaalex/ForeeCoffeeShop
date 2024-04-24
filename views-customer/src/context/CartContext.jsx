@@ -7,12 +7,15 @@ const CartContext = createContext({
   reduceItemQuantity: (itemId) => { },
   addItemQuantity: (itemId) => { },
   selectedBranch: null,
+  deliveryMethod: null,
   setSelectedBranch: (branch) => { },
+  setDeliveryMethod: (deliveryMethod) => { },
 });
 
 const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState(null);
+  const [selectedBranch, setSelectedBranch] = useState('Trans Studio Mall Bandung');
+  const [deliveryMethod, setDeliveryMethod] = useState('PICK UP');
 
   const addItemToCart = (item) => {
     setCartItems((prevItems) => [...prevItems, { ...item, quantity: 1 }]);
@@ -51,7 +54,14 @@ const CartProvider = ({ children }) => {
   };
 
   const selectBranch = (branch) => {
-    setSelectedBranch(branch);
+    if (branch !== selectedBranch) {
+      setSelectedBranch(branch);
+      resetCart();
+    }
+  };
+
+  const selectDeliveryMethod = (method) => {
+    setDeliveryMethod(method);
   };
 
   const hasItemInCart = (itemId) => {
@@ -66,12 +76,18 @@ const CartProvider = ({ children }) => {
   const getTotalPriceOfItem = (itemId) => {
     const item = cartItems.find((item) => item.id === itemId);
     return item ? item.quantity * item.price : 0;
+  };
+
+  const resetCart = () => {
+    setCartItems([]);
   }
 
   const value = {
     selectedBranch,
+    deliveryMethod,
     cartItems,
     selectBranch,
+    selectDeliveryMethod,
     addItemToCart,
     removeItemFromCart,
     addItemQuantity,
