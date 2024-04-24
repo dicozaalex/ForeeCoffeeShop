@@ -76,6 +76,6 @@
 }
 
 .statusBox.active {
-    background-color: goldenrod; /* Change color for active status */
+    background-color: #9e8959; /* Change color for active status */
     text-decoration: underline;
 }

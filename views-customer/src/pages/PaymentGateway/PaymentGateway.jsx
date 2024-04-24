@@ -26,22 +26,36 @@ function PaymentGateway() {
     // Construct the request body
     const requestBody = {
       branch_name: "Griya Buah Batu", // dummy
-      "product_name[]": [],
-      "quantity[]": []
+      product_name: cartItems.map((product) => product.name),
+      quantity: cartItems.map((product) => product.quantity),
     };
 
-    // Extract product names and quantities from cartItems
-    cartItems.forEach((product) => {
-      requestBody["product_name[]"].push(product.name);
-      requestBody["quantity[]"].push(product.quantity);
-    });
-    console.log("Cart items:");
-    console.log(cartItems);
-    // Convert the request body to x-www-form-urlencoded format
-    const formBody = Object.keys(requestBody)
-      .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(requestBody[key]))
-      .join("&");
+    // const formData = new FormData();
+    // formData.append("branch_name", "Griya Buah Batu");
+    // productNames.forEach(name => {
+    //   formData.append("product_name[]", name);
+    // });
+    // quantity.forEach(qty => {
+    //   formData.append("quantity[]", qty);
+    // });
 
+    // Extract product names and quantities from cartItems
+    // cartItems.forEach((product) => {
+    //   requestBody["product_name[]"].push(product.name);
+    //   requestBody["quantity[]"].push(product.quantity);
+    // });
+    console.log("Cart items:");
+    console.log(requestBody);
+    // Convert the request body to x-www-form-urlencoded format
+    // const formBody = Object.keys(requestBody)
+    //   .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(requestBody[key]))
+    //   .join("&");
+    //   console.log("formBody");
+    //   console.log(formBody);
+    console.log("auth");
+    console.log(auth);
+    console.log("auth header");
+    console.log(authHeader);
     try {
       const response = await fetch(`${backendUrl}/orders`, {
         method: 'POST',
@@ -49,10 +63,12 @@ function PaymentGateway() {
           'Content-Type': 'application/x-www-form-urlencoded',
           'Authorization': authHeader,
         },
-        body: formBody,
+        body: new URLSearchParams(requestBody),
+        credentials: 'include'
       });
+      console.log(response);
 
-      console.log(requestBody);
+      // console.log(requestBody);
       if (response.ok) {
         const responseData = await response.json();
         setMessage(responseData.message);

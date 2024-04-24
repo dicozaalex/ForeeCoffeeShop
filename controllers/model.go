@@ -112,3 +112,9 @@ type Response struct {
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
 }
+
+type OrderDetails2 struct {
+	Product    ShortProduct `json:"product"`
+	PictureUrl string       `json:"picture_url"`
+	Quantity   int          `json:"quantity"`
+}

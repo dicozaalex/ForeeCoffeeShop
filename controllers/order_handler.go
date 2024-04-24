@@ -10,16 +10,19 @@ import (
 )
 
 func InsertOrder(c *gin.Context) {
+
 	db := connect()
 	defer db.Close()
 
 	activeUserId := GetUserId(c)
 	println(activeUserId)
+
 	branchName := c.PostForm("branch_name")
 	println(branchName)
-	productNames := c.PostFormArray("product_name[]")
+	productNames := strings.Split(c.PostForm("product_name"), ",")
+
 	println(productNames)
-	quantity := c.PostFormArray("quantity[]")
+	quantity := strings.Split(c.PostForm("quantity"), ",")
 	println(quantity)
 
 	var branchId int
@@ -31,6 +34,7 @@ func InsertOrder(c *gin.Context) {
 
 	productIds := make([]int, len(productNames))
 	for i, productName := range productNames {
+		println(productName)
 		err = db.QueryRow("SELECT id FROM products WHERE name = ?", productName).Scan(&productIds[i])
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid product name", "debug": err.Error()})
@@ -185,4 +189,123 @@ func UpdateOrderStatus(c *gin.Context) {
 	response.Message = http.StatusText(http.StatusOK)
 	response.Data = gin.H{"message": "Update Order Status Success"}
 	c.JSON(http.StatusOK, response)
+}
+
+func GetLatestOrder(c *gin.Context) {
+	db := connect()
+	defer db.Close()
+
+	activeUserId := GetUserId(c)
+
+	var orders []Order
+	query := "SELECT id FROM `orders` WHERE userId = ? ORDER BY orders.transactionTime DESC LIMIT 1"
+	orderRows, err := db.Query(query, activeUserId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch orders"})
+		return
+	}
+	defer orderRows.Close()
+
+	for orderRows.Next() {
+		totalPrice := 0
+		var orderID int
+		err := orderRows.Scan(&orderID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to scan order ID"})
+			return
+		}
+
+		var order Order
+		var orderDetails []OrderDetails
+		detailRows, err := db.Query("SELECT product.name, product.price, orderdetails.quantity FROM products product"+
+			" JOIN orderdetails ON product.id = orderdetails.productId"+
+			" JOIN `orders` ON orderdetails.orderid = orders.id WHERE orders.id = ?", orderID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch order details"})
+			return
+		}
+		defer detailRows.Close()
+
+		for detailRows.Next() {
+			var orderDetail OrderDetails
+			err := detailRows.Scan(&orderDetail.Product.Name, &orderDetail.Product.Price, &orderDetail.Quantity)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to scan order detail"})
+				return
+			}
+			totalPrice += (orderDetail.Product.Price * orderDetail.Quantity)
+			orderDetails = append(orderDetails, orderDetail)
+		}
+
+		order.TotalPrice = totalPrice
+		order.Details = orderDetails
+		order.ID = orderID
+		err = db.QueryRow("SELECT transactionTime, branchid, `status` FROM `orders` WHERE id = ?", orderID).Scan(&order.TransactionTime, &order.BranchID, &order.Status)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		orders = append(orders, order)
+	}
+
+	var response Response
+	response.Status = http.StatusOK
+	response.Message = http.StatusText(http.StatusOK)
+	response.Data = orders
+	c.IndentedJSON(http.StatusOK, response)
+}
+
+func GetViewOrder(c *gin.Context) {
+	db := connect()
+	defer db.Close()
+
+	activeUserId := GetUserId(c)
+
+	var orderDetails []OrderDetails2
+
+	query := "SELECT id FROM `orders` WHERE userId = ? ORDER BY orders.transactionTime DESC LIMIT 1"
+	orderRows, err := db.Query(query, activeUserId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch orders"})
+		return
+	}
+	defer orderRows.Close()
+
+	for orderRows.Next() {
+		totalPrice := 0
+		var orderID int
+		err := orderRows.Scan(&orderID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to scan order ID"})
+			return
+		}
+
+		detailRows, err := db.Query("SELECT product.name, product.price, product.pictureUrl, orderdetails.quantity FROM products product"+
+			" JOIN orderdetails ON product.id = orderdetails.productId"+
+			" JOIN `orders` ON orderdetails.orderid = orders.id WHERE orders.id = ?", orderID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch order details"})
+			return
+		}
+		defer detailRows.Close()
+
+		for detailRows.Next() {
+			var orderDetail OrderDetails2
+			err := detailRows.Scan(&orderDetail.Product.Name, &orderDetail.Product.Price, &orderDetail.PictureUrl, &orderDetail.Quantity)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to scan order detail"})
+				return
+			}
+			totalPrice += (orderDetail.Product.Price * orderDetail.Quantity)
+			orderDetails = append(orderDetails, orderDetail)
+		}
+	}
+
+	var response Response
+	response.Status = http.StatusOK
+	response.Message = http.StatusText(http.StatusOK)
+	print(orderDetails)
+	response.Data = orderDetails
+	c.IndentedJSON(http.StatusOK, response)
 }
