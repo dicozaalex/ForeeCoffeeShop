@@ -36,7 +36,7 @@ function Home() {
     };
 
     const handleLatestButtonClick = () => {
-        navigate('/order');
+        navigate('/order-delivery');
     }
 
     const filterProductsBySubcategory = (subcategory) => {

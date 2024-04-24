@@ -1,10 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Order.module.css';
+import NavbarCheckout from '../../components/Navbar/NavbarCheckout';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import { CartContext } from '../../context/CartContext';
+import { useContext } from 'react';
+
 
 function OrderDelivery() {
+    const { cartItems, selectedBranch, getTotalPriceOfItem, getTotalPrice, addItemToCart, addItemQuantity, reduceItemQuantity, hasItemInCart, getQuantityOfItem } = useContext(CartContext);
+    const auth = useAuthUser();
     return (
         <>
+        <NavbarCheckout />
             <div className={styles.fullScreen}>
                 <div className={styles.information}>
                     <div className={styles.infoItem}>
@@ -23,15 +31,13 @@ function OrderDelivery() {
                             <span>Location</span>
                             <span>Jl. Dipatiukur No.8, Bandung</span>
                         </div>
-                        <div className={styles.changeLocation}>
-                            <span style={{ color: '#1C5739', margin: 'auto' }}>Change</span>
-                        </div>
                     </div>
+                    <hr style={{ border: '0', borderTop: '2px solid white', marginTop: '-10px', width: 'calc(100% - 60px)', marginLeft: '65px' }} />
                     <div className={styles.infoItem} style={{ marginTop: '20px' }}>
                         <img className={styles.img} src={`${process.env.PUBLIC_URL}/assets/ViewOrder/user.png`} alt="user" />
                         <div className={styles.infoText}>
                             <span>Name</span>
-                            <span>Felis</span>
+                            <span>{auth.name}</span>
                         </div>
                     </div>
                     <hr style={{ border: '0', borderTop: '2px solid white', marginTop: '-10px', width: 'calc(100% - 60px)', marginLeft: '60px' }} />
@@ -48,62 +54,54 @@ function OrderDelivery() {
                 <div className={styles.order}>
                     <div className={styles.orderHeader}>
                         <h1 className={styles.h1}>Order Details</h1>
-                        <Link to="/coffee" className={styles['addButton']}>
+                        <Link to="/" className={styles['addButton']}>
                             <span style={{ color: '#1C5739', margin: 'auto' }}>Add</span>
                         </Link>
                     </div>
                     <hr style={{ border: '0', borderTop: '2px solid white', marginTop: '5px' }} />
-                    <div className={styles.orderList}>
-                        <div className={styles.orderName}>
-                            <span>Matcha Green Tea</span>
-                            <img className={styles.img} src={`${process.env.PUBLIC_URL}/assets/ViewOrder/matcha-green-tea.png`} alt="menu" />
-                        </div>
-                        <div className={styles.orderDetails}>
-                            <div>
-                                <span>Rp 10.000</span>
+                    {cartItems.map((product, index) => (
+                        <div key={index} className={styles.orderList}>
+                            <div className={styles.orderName}>
+                                <span>{product.name}</span>
+                                <img className={styles.img} src={product.picture_url} alt="menu" />
                             </div>
-                            <div className={styles.orderItems}>
-                                <img className={styles.img} src={`${process.env.PUBLIC_URL}/assets/Order/minus.png`} alt="minus" />
-                                <span>2</span>
-                                <img className={styles.img} src={`${process.env.PUBLIC_URL}/assets/Order/plus.png`} alt="plus" />
-                            </div>
-                        </div>
-                    </div>
-                    <div className={styles.orderList}>
-                        <div className={styles.orderName}>
-                            <span>Strawberry Donut</span>
-                            <img className={styles.img} src={`${process.env.PUBLIC_URL}/assets/ViewOrder/strawberry-donut.png`} alt="menu" />
-                        </div>
-                        <div className={styles.orderDetails}>
-                            <div>
-                                <span>Rp 10.000</span>
-                            </div>
-                            <div className={styles.orderItems}>
-                                <img className={styles.img} src={`${process.env.PUBLIC_URL}/assets/Order/minus.png`} alt="minus" />
-                                <span>1</span>
-                                <img className={styles.img} src={`${process.env.PUBLIC_URL}/assets/Order/plus.png`} alt="plus" />
+                            <div className={styles.orderDetails}>
+                                <div>
+                                    <span>Rp {getTotalPriceOfItem(product.id)}</span>
+                                </div>
+                                <div className={styles.orderItems}>
+                                    {!hasItemInCart(product.id) ? (
+                                        <button className="ml-4" onClick={() => addItemToCart(product)}>
+                                            <img src={`${process.env.PUBLIC_URL}/assets/menu/add.png`} alt="Add" width="20px"></img>
+                                        </button>
+                                    ) : (
+                                        <div className="flex items-center">
+                                            <button className="mr-2" onClick={() => reduceItemQuantity(product.id)}>
+                                                <img src={`${process.env.PUBLIC_URL}/assets/menu/reduce.png`} alt="Reduce" width="20px"></img>
+                                            </button>
+                                            <div className="text-white">{getQuantityOfItem(product.id)}</div>
+                                            <button className="ml-2" onClick={() => addItemQuantity(product.id)}>
+                                                <img src={`${process.env.PUBLIC_URL}/assets/menu/add.png`} alt="Add" width="20px"></img>
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    ))}
                     <br />
                     <h1 className={styles.h1}>Total Payment</h1>
                     <hr style={{ border: '0', borderTop: '2px solid white', marginTop: '5px' }} />
                     <div className={styles.orderTotal}>
-                        <div className={styles.orderTotalPrice}>
-                            <span>Price</span>
-                            <span>Rp 30.000</span>
-                        </div>
-                        <div className={styles.orderTotalDetails}>
-                            <span>Matcha Green Tea (2)</span>
-                            <span>Rp 20.000</span>
-                        </div>
-                        <div className={styles.orderTotalDetails}>
-                            <span>Strawberry Donut (1)</span>
-                            <span>Rp 10.000</span>
-                        </div>
+                        {cartItems.map((product, index) => (
+                            <div key={index} className={styles.orderTotalDetails}>
+                                <span className={styles.productName}>{product.name} ({product.quantity})</span>
+                                <span>Rp {getTotalPriceOfItem(product.id)}</span>
+                            </div>
+                        ))}
                         <div className={styles.orderTotalPrice}>
                             <span>Total Price</span>
-                            <span>Rp 30.000</span>
+                            <span>Rp {getTotalPrice()}</span>
                         </div>
                     </div>
                 </div>

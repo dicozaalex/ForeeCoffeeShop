@@ -72,9 +72,10 @@
     border: 2px solid white;
     border-radius: 5px;
     cursor: pointer;
+    text-align: center;
 }
 
 .statusBox.active {
-    background-color: goldenrod; /* Change color for active status */
+    background-color: #9e8959; /* Change color for active status */
     text-decoration: underline;
 }

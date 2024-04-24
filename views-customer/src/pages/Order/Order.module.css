@@ -121,7 +121,7 @@
   align-items: center;
   justify-content: flex-start;
 }
-.addButton, .changeLocation{
+.addButton{
   background-color: white;
   font-weight: bold;
   padding: 10px 20px;
@@ -132,4 +132,9 @@
   align-items: center;
   justify-content: flex-start;
   cursor: pointer;
+}
+
+.productName {
+  max-width: 70%; 
+  word-wrap: break-word; 
 }
