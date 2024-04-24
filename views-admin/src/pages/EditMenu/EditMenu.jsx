@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Navbar from '../../components/Navbar/Navbar';
+import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 
 function EditMenu() {
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  const authHeader = useAuthHeader();
   const [inputs, setInputs] = useState({
     productId: '',
     productName: '',
@@ -17,13 +20,12 @@ function EditMenu() {
   const [subCategories, setSubCategories] = useState([]);
 
   useEffect(() => {
-    //API = '${backendUrl}/products/name?Name=${productName}&Branch=${branchName}'
-    axios.get(`${backendUrl}/products/name?Name=Matcha&Branch=Dipatiukur, Bandung`)
-      // , {
-      //   headers: {
-      //     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-      //   },
-      // }
+    axios.get(`${backendUrl}/products/name?Name=Matcha&Branch=Dipatiukur, Bandung`, {
+        credentials: 'include',
+        headers: {
+          'Authorization': authHeader,
+        },
+      })
       .then((response) => {
         const productData = response.data.data.products[0];
 
@@ -51,7 +53,7 @@ function EditMenu() {
       .catch((error) => {
         console.error('Error fetching product data:', error);
       });
-  }, [backendUrl]);
+  }, [backendUrl, authHeader]);
 
 
   useEffect(() => {
@@ -170,7 +172,9 @@ function EditMenu() {
 
     try {
       const response = axios.put(`${backendUrl}/products/${inputs.productId}`, formData, {
+        credentials: 'include',
         headers: {
+          'Authorization': authHeader,
           'Content-Type': 'multipart/form-data'
         }
       });
@@ -187,8 +191,12 @@ function EditMenu() {
     formData.append('productName', inputs.productName);
     formData.append('stock', inputs.stock);
 
-    // API still not correct (hard-coded)
-    axios.put(`${backendUrl}/productBranch/Dipatiukur, Bandung`, formData)
+    axios.put(`${backendUrl}/productBranch/Dipatiukur, Bandung`, formData, {
+      credentials: 'include',
+      headers: {
+        'Authorization': authHeader,
+      }
+    })
       .then((response) => {
         console.log('Stock updated:', response.data);
       })
@@ -201,14 +209,12 @@ function EditMenu() {
   const handleDelete = () => {
     const confirmed = window.confirm('Are you sure you want to delete this product? Click OK to delete, or Cancel to go back.');
     if (confirmed) {
-      // API = `${backendUrl}/products/${productId}
-      axios.delete(`${backendUrl}/products/2013`
-        // , {
-        //   headers: {
-        //     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        //   },
-        // }
-      )
+      axios.delete(`${backendUrl}/products/2013`, {
+        credentials: 'include',
+        headers: {
+          'Authorization': authHeader,
+        },
+      })
         .then((response) => {
           console.log('Product deleted:', response.data);
         })
@@ -219,6 +225,9 @@ function EditMenu() {
   };
 
   return (
+  <>
+    <Navbar />
+
     <div className="flex flex-col items-center justify-center min-h-screen" style={{ backgroundColor: '#1C5739', paddingTop: '4rem' }}>
       <form onSubmit={handleSubmit} className="w-6/12">
 
@@ -351,6 +360,7 @@ function EditMenu() {
         </div>
       </form>
     </div>
+  </>
   );
 }
 
