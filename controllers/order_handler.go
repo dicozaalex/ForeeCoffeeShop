@@ -19,6 +19,10 @@ func InsertOrder(c *gin.Context) {
 
 	branchName := c.PostForm("branch_name")
 	println(branchName)
+	phoneNumber := c.PostForm("phone_number")
+	println(phoneNumber)
+	address := c.PostForm("address")
+	println(address)
 	productNames := strings.Split(c.PostForm("product_name"), ",")
 
 	println(productNames)
@@ -79,6 +83,28 @@ func InsertOrder(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
+	}
+	// get latest order id
+	query := "SELECT id FROM `orders` WHERE userId = ? AND status = 'ON PROGRESS' AND devileryMethod = 'DELIVERY' ORDER BY orders.transactionTime DESC LIMIT 1"
+	orderRows, err := db.Query(query, activeUserId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch orders"})
+		return
+	}
+	defer orderRows.Close()
+	var orderID int
+	for orderRows.Next() {
+		err := orderRows.Scan(&orderID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to scan order ID"})
+			return
+		}
+	}
+	// insert to delivery details
+	_, err2 := db.Exec("INSERT INTO `deliveryDetails` (orderId, phoneNumber, address) VALUES (?, ?, ?)", orderID, phoneNumber, address)
+	if err2 != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	var response Response
@@ -308,4 +334,82 @@ func GetViewOrder(c *gin.Context) {
 	print(orderDetails)
 	response.Data = orderDetails
 	c.IndentedJSON(http.StatusOK, response)
+}
+
+func InsertOrderPickup(c *gin.Context) {
+	db := connect()
+	defer db.Close()
+
+	activeUserId := GetUserId(c)
+	println(activeUserId)
+
+	branchName := c.PostForm("branch_name")
+	println(branchName)
+	productNames := strings.Split(c.PostForm("product_name"), ",")
+
+	println(productNames)
+	quantity := strings.Split(c.PostForm("quantity"), ",")
+	println(quantity)
+
+	var branchId int
+	err := db.QueryRow("SELECT id FROM branches WHERE name = ?", branchName).Scan(&branchId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid branch name"})
+		return
+	}
+
+	productIds := make([]int, len(productNames))
+	for i, productName := range productNames {
+		println(productName)
+		err = db.QueryRow("SELECT id FROM products WHERE name = ?", productName).Scan(&productIds[i])
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid product name", "debug": err.Error()})
+			return
+		}
+
+		quantity, err := strconv.Atoi(quantity[i])
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid quantity"})
+			return
+		}
+
+		_, err = db.Exec("UPDATE branchproduct bp "+
+			"JOIN branches b ON bp.branchId = b.id "+
+			"JOIN products p ON bp.productId = p.id "+
+			"SET bp.productQuantity = bp.productQuantity - ? "+
+			"WHERE b.id = ? AND p.id = ?", quantity, branchId, productIds[i])
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
+	now := time.Now()
+
+	result, err := db.Exec("INSERT INTO `orders` (transactionTime, userId, status, branchId, devileryMethod) VALUES (?, ?, 'ON PROGRESS',  ?, 'PICK UP')", now, activeUserId, branchId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	lastInsertId, err := result.LastInsertId()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	orderId := int(lastInsertId)
+	for i, _ := range productNames {
+		_, err = db.Exec("INSERT INTO orderdetails (orderId, productId, quantity) VALUES (?, ?, ?)", orderId, productIds[i], quantity[i])
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
+	var response Response
+	response.Status = http.StatusOK
+	response.Message = http.StatusText(http.StatusOK)
+	response.Data = gin.H{"message": "order created successfully"}
+	c.JSON(http.StatusOK, response)
 }

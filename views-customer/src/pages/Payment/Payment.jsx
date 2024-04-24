@@ -6,7 +6,7 @@ import { CartContext } from '../../context/CartContext';
 import { useContext } from 'react';
 
 function Payment() {
-    const { cartItems, selectedBranch, getTotalPriceOfItem, getTotalPrice, addItemToCart, addItemQuantity, reduceItemQuantity, hasItemInCart, getQuantityOfItem } = useContext(CartContext);
+    const { cartItems, address, phoneNumber, selectedBranch, getTotalPriceOfItem, getTotalPrice, addItemToCart, addItemQuantity, reduceItemQuantity, hasItemInCart, getQuantityOfItem } = useContext(CartContext);
     const auth = useAuthUser();
   return (
     <div className={styles.fullScreen}>

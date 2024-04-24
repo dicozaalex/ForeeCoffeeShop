@@ -35,6 +35,7 @@ func main() {
 	// ORDERS
 	ordersRoutes := router.Group("/orders")
 	ordersRoutes.POST("", controllers.AuthMiddleware("CUSTOMER"), controllers.InsertOrder)
+	ordersRoutes.POST("/pickup", controllers.AuthMiddleware("CUSTOMER"), controllers.InsertOrderPickup)
 	ordersRoutes.GET("/history", controllers.AuthMiddleware("CUSTOMER"), controllers.HistoryOrder)
 	ordersRoutes.GET("/latest-order", controllers.AuthMiddleware("CUSTOMER"), controllers.GetLatestOrder)
 	ordersRoutes.GET("/view-order", controllers.AuthMiddleware("CUSTOMER"), controllers.GetViewOrder)
