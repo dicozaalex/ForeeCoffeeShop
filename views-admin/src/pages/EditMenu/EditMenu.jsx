@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import Navbar from '../../components/Navbar/Navbar';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import { useLocation } from 'react-router-dom';
+import { BranchContext } from '../../context/BranchContext';
 
 function EditMenu({route}) {
   const location = useLocation();
+  const { selectedBranch } = useContext(BranchContext);
   const { itemName } = location.state || {};
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
   const authHeader = useAuthHeader();
@@ -23,7 +25,7 @@ function EditMenu({route}) {
   const [subCategories, setSubCategories] = useState([]);
 
   useEffect(() => {
-    axios.get(`${backendUrl}/products/name?Name=${itemName}&Branch=Dipatiukur, Bandung`, 
+    axios.get(`${backendUrl}/products/name?Name=${itemName}&${selectedBranch}`, 
     {
         credentials: 'include',
         headers: {
@@ -58,7 +60,7 @@ function EditMenu({route}) {
       .catch((error) => {
         console.error('Error fetching product data:', error);
       });
-  }, [backendUrl ,authHeader]);
+  }, [backendUrl ,authHeader, itemName, selectedBranch]);
 
 
   useEffect(() => {
@@ -198,7 +200,7 @@ function EditMenu({route}) {
     formData.append('productName', inputs.productName);
     formData.append('stock', inputs.stock);
 
-    axios.put(`${backendUrl}/productBranch/Dipatiukur, Bandung`, formData, 
+    axios.put(`${backendUrl}/productBranch/${selectedBranch}`, formData, 
     {
       credentials: 'include',
       headers: {
@@ -218,7 +220,7 @@ function EditMenu({route}) {
   const handleDelete = () => {
     const confirmed = window.confirm('Are you sure you want to delete this product? Click OK to delete, or Cancel to go back.');
     if (confirmed) {
-      axios.delete(`${backendUrl}/products/2013`, 
+      axios.delete(`${backendUrl}/products/${inputs.productId}`, 
       {
         credentials: 'include',
         headers: {

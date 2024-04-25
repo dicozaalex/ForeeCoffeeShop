@@ -1,9 +1,11 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Navbar from '../../components/Navbar/Navbar';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
+import { BranchContext } from '../../context/BranchContext';
 
 function InsertMenu() {
+  const { selectedBranch } = useContext(BranchContext);
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
   const authHeader = useAuthHeader();
   const [inputs, setInputs] = useState({
@@ -126,7 +128,7 @@ function InsertMenu() {
     StockFormData.append('stock', inputs.stock);
   
     try {
-      const stockResponse = await axios.post(`${backendUrl}/productBranch/Dipatiukur, Bandung`, StockFormData, {
+      const stockResponse = await axios.post(`${backendUrl}/productBranch/${selectedBranch}`, StockFormData, {
         credentials: 'include',
         headers: {
           'Authorization': authHeader,

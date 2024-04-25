@@ -3,6 +3,14 @@ ForeeCoffee is a final project in the form of web-based coffee shop ordering for
 
 <img src="https://drive.google.com/uc?export=download&id=1DTSG8iiIi70KKaO6PE0cXW5uQot7wrsS" alt="Logo Foree" width=20%>
 
+# The Team
+|Name|NIM|
+|----|-----|
+|Michaela Sheren Sugianto|1121007|
+|Alexander Juan Dicoza|1121010|
+|Felicia Kiani Lestari|1121017|
+|Vincent Christian Laurent|1121020|
+
 # Features
 * Sign Up / Login (With Authentication and Authorization)
 * Order Drinks and Food
