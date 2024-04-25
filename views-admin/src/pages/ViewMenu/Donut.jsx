@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar/Navbar';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
+import { CartContext } from '../../context/CartContext';
 
 function Donut() {
+    const {selectedBranch} = useContext(CartContext);
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
     const authHeader = useAuthHeader();
     const [menuItems, setMenuItems] = useState([]);
@@ -15,7 +17,7 @@ function Donut() {
 
     const fetchMenuItems = async () => {
         try {
-            const response = await fetch(`${backendUrl}/products/donut?Branch=Griya Buah Batu`, {
+            const response = await fetch(`${backendUrl}/products/donut?Branch=${selectedBranch}`, {
                 credentials: 'include',
                 headers: {
                     'Authorization': authHeader,
