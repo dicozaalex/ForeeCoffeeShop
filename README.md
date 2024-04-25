@@ -57,5 +57,12 @@ Redis is used to store the products images with the benefits of:
 # User Interface
 App UI Documentation: [Figma Foree Coffee Shop UI](https://www.figma.com/file/IMSI7mXr9GAQ10HVOo0gO7/Foree-Coffee?type=design&node-id=0%3A1&mode=design&t=3a3SF7T7nwO5wTPD-1)
 
+## Admin UI:
+<img src="https://drive.google.com/uc?export=download&id=1cNExIxI8XDjzGU-Y8UzbR6Oo0EinONYO" alt="Forree UI Admin" width="100%">
+
+## Customer UI:
+<img src="https://drive.google.com/uc?export=download&id=1OcrNWTDbdIu14hto0pR9G6c3UMPoyNlW" alt="Forree UI Admin" width="100%">
+<img src="https://drive.google.com/uc?export=download&id=1WIZX2q40bY7a7tSjIdLLz7vMQ7FKOCpa" alt="Forree UI Admin" width="70%">
+
 # Video Presentation Link
 Link: https://drive.google.com/file/d/1I5ussw3Pn72NqMMpY2bXR5hT9VPezRcz/view?usp=sharing
