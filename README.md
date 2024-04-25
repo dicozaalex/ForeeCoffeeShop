@@ -6,10 +6,10 @@ ForeeCoffee is a final project in the form of web-based coffee shop ordering for
 # The Team
 |Name|NIM|Tugas|
 |----|-----|--------|
-|Michaela Sheren Sugianto|1121007|Menu Coffee, Non-Coffee, Donut - Admin, Customer (FE), Order (BE)
+|Michaela Sheren Sugianto|1121007|Menu (Coffee, Non-Coffee, Donut - Admin, Customer) (FE), Order (BE), Navbar (BE, FE)
 |Alexander Juan Dicoza|1121010|Payment Gateway (BE), Order (BE, FE), View Order (BE, FE), Login (BE), Product Branch (BE)
 |Felicia Kiani Lestari|1121017|Menu (BE), Payment (FE), Paymet Gateway (FE), Edit Menu (BE, FE), Insert Menu (Be, FE), Github Readme
-|Vincent Christian Laurent|1121020|Login Admin Customer (BE, FE), Register (BE, FE), Branch (FE), Email (BE)
+|Vincent Christian Laurent|1121020|Login Admin Customer (BE, FE), Register (BE, FE), Branch (FE), Email (BE), Cart (BE)
 
 # Features
 * Sign Up / Login (With Authentication and Authorization)
@@ -53,3 +53,9 @@ Redis is used to store the products images with the benefits of:
 * GoRoutine: used for working with Redis
 * GoCRON: used for scheduling tasks or jobs
 * GoRedis: used for enabling concurrent execution of functions or tasks
+
+# User Interface
+App UI Documentation: [Figma Foree Coffee Shop UI](https://www.figma.com/file/IMSI7mXr9GAQ10HVOo0gO7/Foree-Coffee?type=design&node-id=0%3A1&mode=design&t=3a3SF7T7nwO5wTPD-1)
+
+# Video Presentation Link
+Link: https://drive.google.com/file/d/1I5ussw3Pn72NqMMpY2bXR5hT9VPezRcz/view?usp=sharing
