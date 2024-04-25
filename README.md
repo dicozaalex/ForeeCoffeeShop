@@ -4,12 +4,12 @@ ForeeCoffee is a final project in the form of web-based coffee shop ordering for
 <img src="https://drive.google.com/uc?export=download&id=1DTSG8iiIi70KKaO6PE0cXW5uQot7wrsS" alt="Logo Foree" width=20%>
 
 # The Team
-|Name|NIM|
-|----|-----|
-|Michaela Sheren Sugianto|1121007|
-|Alexander Juan Dicoza|1121010|
-|Felicia Kiani Lestari|1121017|
-|Vincent Christian Laurent|1121020|
+|Name|NIM|Tugas|
+|----|-----|--------|
+|Michaela Sheren Sugianto|1121007|Menu Coffee, Non-Coffee, Donut - Admin, Customer (FE), Order (BE)
+|Alexander Juan Dicoza|1121010|Payment Gateway (BE), Order (BE, FE), View Order (BE, FE), Login (BE), Product Branch (BE)
+|Felicia Kiani Lestari|1121017|Menu (BE), Payment (FE), Paymet Gateway (FE), Edit Menu (BE, FE), Insert Menu (Be, FE), Github Readme
+|Vincent Christian Laurent|1121020|Login Admin Customer (BE, FE), Register (BE, FE), Branch (FE), Email (BE)
 
 # Features
 * Sign Up / Login (With Authentication and Authorization)
