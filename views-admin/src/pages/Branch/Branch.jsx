@@ -113,6 +113,13 @@ const Branch = () => {
     }
   };
 
+  const handleSignOut = () => {
+    signOut();
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
+  }
+
   return (
     <>
       <Navbar />
@@ -171,7 +178,7 @@ const Branch = () => {
           <div className="flex flex-col justify-center w-8/12 text-white">
             <button onClick={() => handleSave()} className="btn px-5 py-2 mb-3 rounded bg-brand">Save Changes</button>
             <button onClick={() => deleteBranch()} className="btn px-5 py-2 mb-10 rounded bg-red-500">Delete Branch</button>
-            <button onClick={() => signOut()} className="btn px-5 py-2 rounded bg-stone-500">Logout</button>
+            <button onClick={() => handleSignOut()} className="btn px-5 py-2 rounded bg-stone-500">Logout</button>
           </div>
         </div>
       </div>

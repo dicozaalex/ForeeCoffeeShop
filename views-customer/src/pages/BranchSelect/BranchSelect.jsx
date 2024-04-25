@@ -41,7 +41,14 @@ const BranchSelect = () => {
 
   const handleDeliveryMethodChange = (e) => {
     selectDeliveryMethod(e.target.value);
-  }
+  };
+
+  const handleSignOut = () => {
+    signOut();
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
+  };
 
   return (
     <>
@@ -80,7 +87,7 @@ const BranchSelect = () => {
             </select>
           </div>
           <div className="flex justify-around text-white">
-            <button onClick={() => signOut()} className="btn px-10 py-2 rounded bg-stone-500">Logout</button>
+            <button onClick={() => handleSignOut()} className="btn px-10 py-2 rounded bg-stone-500">Logout</button>
             <button onClick={() => navigate('/')} className="btn px-10 py-2 rounded bg-emerald-500">Confirm</button>
           </div>
         </div>
