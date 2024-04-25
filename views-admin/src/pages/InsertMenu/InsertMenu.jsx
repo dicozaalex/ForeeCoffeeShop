@@ -85,6 +85,9 @@ function InsertMenu() {
       .then(() => {
         alert('Insert Success');
       })
+      .then(() => {
+        window.location.reload();
+      })
       .catch((error) => {
         console.error('Error updating:', error);
       });
@@ -188,12 +191,6 @@ function InsertMenu() {
             alt="Food and Drink"
             className="w-full h-full object-cover"
             style={{ zIndex: 1 }}
-          />
-          <img
-            src={`${process.env.PUBLIC_URL}/assets/pencil.png`}
-            alt="Pencil"
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-5 h-5"
-            style={{ zIndex: 3 }}
           />
         </div>
 

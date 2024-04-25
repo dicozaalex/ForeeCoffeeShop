@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import Navbar from '../../components/Navbar/Navbar';
@@ -9,7 +8,6 @@ import { BranchContext } from '../../context/BranchContext';
 const Branch = () => {
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
   const authHeader = useAuthHeader();
-  const navigate = useNavigate();
   const [branchData, setBranchData] = useState([]);
   const [inputs, setInputs] = useState({
     name: "Trans Studio Mall Bandung",

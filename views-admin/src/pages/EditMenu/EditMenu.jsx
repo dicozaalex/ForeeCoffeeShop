@@ -4,11 +4,13 @@ import Navbar from '../../components/Navbar/Navbar';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 import { useLocation } from 'react-router-dom';
 import { BranchContext } from '../../context/BranchContext';
+import { useNavigate } from 'react-router-dom';
 
 function EditMenu({route}) {
+  const navigate = useNavigate();
   const location = useLocation();
+  const { itemName } = 'Chocolate Donut';
   const { selectedBranch } = useContext(BranchContext);
-  const { itemName } = location.state || {};
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
   const authHeader = useAuthHeader();
   const [inputs, setInputs] = useState({
@@ -25,7 +27,7 @@ function EditMenu({route}) {
   const [subCategories, setSubCategories] = useState([]);
 
   useEffect(() => {
-    axios.get(`${backendUrl}/products/name?Name=${itemName}&${selectedBranch}`, 
+    axios.get(`${backendUrl}/products/name?Name=Chocolate Donut&Branch=${selectedBranch}`, 
     {
         credentials: 'include',
         headers: {
@@ -113,7 +115,7 @@ function EditMenu({route}) {
 
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!checkAllFieldsFilled(inputs)) {
@@ -131,13 +133,9 @@ function EditMenu({route}) {
       return;
     }
 
-    Promise.all([handleProductUpdate(), handleStockUpdate()])
-      .then(() => {
-        alert('Updated Success');
-      })
-      .catch((error) => {
-        console.error('Error updating:', error);
-      });
+    handleProductUpdate();
+    alert('Updated Success');
+    navigate('/coffee')
 
     console.log('Form submitted:', inputs);
   };
@@ -166,7 +164,7 @@ function EditMenu({route}) {
     return !isNaN(Number(stock)) && Number(stock) >= 0;
   };
 
-  const handleProductUpdate = () => {
+  const handleProductUpdate = async () => {
     const formData = new FormData();
     formData.append('id', inputs.productId);
     formData.append('productName', inputs.productName);
@@ -177,8 +175,10 @@ function EditMenu({route}) {
     formData.append('desc', inputs.desc);
     formData.append('photo', inputs.photo);
 
+    console.log(formData);
+
     try {
-      const response = axios.put(`${backendUrl}/products/${inputs.productId}`, formData, 
+      const response = await axios.put(`${backendUrl}/products/${inputs.productId}`, formData, 
       {
         credentials: 'include',
         headers: {
@@ -188,6 +188,7 @@ function EditMenu({route}) {
       }
     );
       console.log('Product updated:', response.data);
+      handleStockUpdate();
 
     } catch (error) {
       console.error('Error updating product:', error);
@@ -219,6 +220,7 @@ function EditMenu({route}) {
 
   const handleDelete = () => {
     const confirmed = window.confirm('Are you sure you want to delete this product? Click OK to delete, or Cancel to go back.');
+    console.log(inputs.productId);
     if (confirmed) {
       axios.delete(`${backendUrl}/products/${inputs.productId}`, 
       {

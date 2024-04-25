@@ -15,19 +15,11 @@ func InsertOrder(c *gin.Context) {
 	defer db.Close()
 
 	activeUserId := GetUserId(c)
-	println(activeUserId)
-
 	branchName := c.PostForm("branch_name")
-	println(branchName)
 	phoneNumber := c.PostForm("phone_number")
-	println(phoneNumber)
 	address := c.PostForm("address")
-	println(address)
 	productNames := strings.Split(c.PostForm("product_name"), ",")
-
-	println(productNames)
 	quantity := strings.Split(c.PostForm("quantity"), ",")
-	println(quantity)
 
 	var branchId int
 	err := db.QueryRow("SELECT id FROM branches WHERE name = ?", branchName).Scan(&branchId)

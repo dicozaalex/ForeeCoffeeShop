@@ -79,7 +79,7 @@ func RekapOrder(c *gin.Context) []ProductDetail {
 
 	rows, err := db.Query("SELECT p.Name, SUM(od.quantity), p.price FROM OrderDetails od" +
 		" JOIN `Orders` o ON o.id = od.orderId JOIN Products p ON p.id = od.productId WHERE" +
-		" o.transactionTime >= DATE(NOW() - INTERVAL 1 DAY) AND" +
+		" o.transactionTime >= DATE(NOW() - INTERVAL 3 DAY) AND" +
 		" o.`status` = 'COMPLETED' GROUP BY p.id")
 	if err != nil {
 		log.Println(err)
