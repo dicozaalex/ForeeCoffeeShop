@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar/Navbar';
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
-import { CartContext } from '../../context/CartContext';
+import { BranchContext } from '../../context/BranchContext';
 
 function NonCoffee() {
-    const {selectedBranch} = useContext(CartContext);
+    const {selectedBranch} = useContext(BranchContext);
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
     const authHeader = useAuthHeader();
     const [menuItems, setMenuItems] = useState([]);
